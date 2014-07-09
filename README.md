@@ -82,6 +82,6 @@ Just use simple magnet links formatted as the above examples with the infohash i
 
 Do not use trackers sites and do not follow their wrong and insecure recommendations, like not using the DHT.
 
-Using the DHT, their are no requirements that you must seed what you download, which as a freerider you are not doing, and ratio enforcement stories.
+Using the DHT, there are no requirements that you must share what you download, which as a freerider you are not doing, and ratio enforcement stories.
 
 If for a given infohash the download does not start, then it probably means that nobody is serving this file, or that there is a bug somewhere, please advise if you are suspecting the later.
