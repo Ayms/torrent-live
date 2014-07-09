@@ -5,7 +5,7 @@ Download and stream live (while the download is in progress) torrents with your 
 
 ## Presentation
 
-This is based on the excellent [torrent-stream](https://github.com/mafintosh/torrent-stream) (with parts of [webtorrent](https://github.com/feross/webtorrent)) modules and is somewhere related to [torrent-mount](https://github.com/mafintosh/torrent-mount) but in a more simple way we believe.
+This is based on the excellent [torrent-stream](https://github.com/mafintosh/torrent-stream) (and common parts of [webtorrent](https://github.com/feross/webtorrent)) modules and is somewhere related to [torrent-mount](https://github.com/mafintosh/torrent-mount) but in a more simple way we believe.
 
 You just have to initiate a download (magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e corresponding to myvideo.mp4) and open your browser on the file that is being downloaded (typically with an URL like file:///D:/torrent/torrent-live/store/myvideo.mp4)
 
@@ -17,7 +17,7 @@ If you have something like Chromecast you can use the Chrome browser and the Cas
 
 torrent-live does behave like a total freerider, so unlike usual bittorrent clients, nobody can know what you are doing and you are not participating to the torrents.
 
-It is of course not using trackers, only magnet links and the bittorrent Distributed Hash Table.
+It is of course not using trackers, only magnet links and the bittorrent Distributed Hash Table (DHT).
 
 The only ones that know something about you are those you are connected to, you can see their IP addresses on the console, it's unlikely that these ones, which are sharing the content, are tracking you.
 
@@ -76,8 +76,12 @@ The default path is the 'store' directory in the 'torrent-live' directory, this 
 	
 	node freerider.js 'magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e' 'D:/myvideos'
 	
-## Tip/Recommendation:
+## Tips/Recommendations:
 
-Just use simple magnet links formatted as the above examples with the infohash information only ('ef330b39f4801d25b4245212e75a38634bfc856e' here), do not use other formats, it's easy to retrieve the infohash information on the internet.
+Just use simple magnet links formatted as the above examples with the infohash information only ('ef330b39f4801d25b4245212e75a38634bfc856e' here), do not use other formats, it's easy to retrieve the infohash information on the internet or to deduct it from trackers links.
 
-If for a given infohash the download does not start, then it probably means that nobody is serving this file, or that there is a bug somewhere, please advise if you suspect the later.
+Do not use trackers sites and do not follow their wrong and insecure recommendations, like not using the DHT.
+
+Using the DHT, their are no requirements that you must seed what you download, which as a freerider you are not doing, and ratio enforcement stories.
+
+If for a given infohash the download does not start, then it probably means that nobody is serving this file, or that there is a bug somewhere, please advise if you are suspecting the later.
