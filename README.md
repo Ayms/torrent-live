@@ -1,7 +1,7 @@
 torrent-live
 ===
 
-Download and stream live (while the download is in progress) torrents with your browser, send it to your TV, as a total freerider do not unveal what you are doing to the outside.
+Download and stream live (while the download is in progress) torrents with your browser, send it to your TV, as a total freerider do not unveal what you are doing to the outside, easy to use and real time.
 
 ## Presentation
 
@@ -11,7 +11,7 @@ You just have to initiate a download (magnet:?xt=urn:btih:ef330b39f4801d25b42452
 
 The streaming will start while the file is being downloaded.
 
-If you have something like Chromecast you can use the Chrome browser and the cast extension to send it to your TV.
+If you have something like Chromecast you can use the Chrome browser and the Cast extension (https://chrome.google.com/webstore/detail/google-cast/boadgeojelhgndaghljhdicfkmllpafd) to send it to your TV.
 
 ## Freerider
 
@@ -19,7 +19,7 @@ torrent-live does behave like a total freerider, so unlike usual bittorrent clie
 
 It is of course not using trackers, only magnet links and the bittorrent Distributed Hash Table.
 
-The only ones that know something about you are those you are connected to, you can see their IP address on the console, it's unlikely that these ones, which are sharing the content, are tracking you.
+The only ones that know something about you are those you are connected to, you can see their IP addresses on the console, it's unlikely that these ones, which are sharing the content, are tracking you.
 
 So you just retrieve the pieces, do not advertise yourself and do not share anything, therefore your activity is difficult to detect.
 
@@ -27,9 +27,9 @@ The messages on the console inform you about what torrent-live is doing and prog
 
 You can keep or remove the file at the end of the download, in any case you are never seeding/sending to others what you have downloaded.
 
-If you would like more advanced security/anonymity features you can check out this project: [Peersm](http://www.peersm.com) and try it, see [node-Tor](https://github.com/Ayms/node-Tor) for the technical details.
+If you want more advanced security/anonymity features you can checkout [Peersm](http://www.peersm.com) and [try it](http://peersm.com/peersm), see [node-Tor](https://github.com/Ayms/node-Tor) for the technical details.
 
-## Installation (Windows, Mac, Linux):
+## Installation and use (Windows, Mac, Linux):
 
 Install nodejs v0.11.9 for your platform (http://nodejs.org/dist/v0.11.9/) or the official nodejs release (http://nodejs.org/download/)
 
@@ -76,6 +76,10 @@ To use it:
 	
 	Examples:
 	
-	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e
+	node freerider.js 'magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e'
 	
-	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos'
+	node freerider.js 'magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e' 'D:/myvideos'
+	
+Tip/Recommendation:
+
+Just use simple magnet links formatted as the above examples with the infohash information ('ef330b39f4801d25b4245212e75a38634bfc856e') only, do not use other formats, it's easy to retrieve the infohash information on the internet.
