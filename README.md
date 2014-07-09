@@ -25,7 +25,7 @@ So you just retrieve the pieces, do not advertise yourself and do not share anyt
 
 The messages on the console inform you about what torrent-live is doing and progress status.
 
-You can keep or remove the file at the end of the download, in any case you are never seeding/sending to others what you have downloaded.
+You can keep or remove the file(s) at the end of the download, in any case you are never seeding/sending to others what you have downloaded.
 
 If you want more advanced security/anonymity features you can checkout [Peersm](http://www.peersm.com) and [try it](http://peersm.com/peersm), see [node-Tor](https://github.com/Ayms/node-Tor) for the technical details.
 
@@ -49,7 +49,7 @@ For different reasons we don't use npm, so to install torrent-live:
 
 	Download http://www.peersm.com/torrent-live.zip
 	
-	Create for example a torrent directory and unzip torrent-live.zip
+	Create for example a 'torrent' directory and unzip torrent-live.zip
 	
 To use it:
 
@@ -63,16 +63,12 @@ To use it:
 	
 	node freerider.js [magnet]
 	
-	The file being downloaded will appear in the store directory (myvideo.mp4) or in a new folder in this
-	directory if there are several files.
-	
-	Wait (looking at the messages "got for torrent myvideo.mp4 of size 1 GB 220 kBytes of data -
-	Piece number x - remaining y MB - speed: z kbps - time left: 0h15 - number of peers: n")
-	that some MBytes have been downloaded and open your browser with an url pointing to your
-	store/myvideo.mp4 directory (ie file:///D:/torrent/torrent-live/store/myvideo.mp4)
-	
-	The default path is the store directory in the torrent-live directory, this is where
-	the files will be stored if you don't specify the path parameter.
+The file being downloaded will appear in the 'store' directory (myvideo.mp4) or in a new folder in this directory if there are several files.
+
+Wait (looking at the messages "got for torrent myvideo.mp4 of size 1 GB 220 kBytes of data - Piece number x - remaining y MB - speed: z kbps - time left: 0h15 - number of peers: n")
+that some MBytes have been downloaded and open your browser with an url pointing to your store/myvideo.mp4 directory (ie file:///D:/torrent/torrent-live/store/myvideo.mp4)
+
+The default path is the 'store' directory in the 'torrent-live' directory, this is where the files will be stored if you don't specify the path parameter.
 	
 	Examples:
 	
@@ -80,6 +76,8 @@ To use it:
 	
 	node freerider.js 'magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e' 'D:/myvideos'
 	
-Tip/Recommendation:
+## Tip/Recommendation:
 
-Just use simple magnet links formatted as the above examples with the infohash information ('ef330b39f4801d25b4245212e75a38634bfc856e') only, do not use other formats, it's easy to retrieve the infohash information on the internet.
+Just use simple magnet links formatted as the above examples with the infohash information only ('ef330b39f4801d25b4245212e75a38634bfc856e' here), do not use other formats, it's easy to retrieve the infohash information on the internet.
+
+If for a given infohash the download does not start, then it probably means that nobody is serving this file, or that there is a bug somewhere, please advise if you suspect the later.
