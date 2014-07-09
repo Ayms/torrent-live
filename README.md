@@ -1,7 +1,7 @@
 torrent-live
 ===
 
-Download and stream live (while the download is in progress) torrents with your browser, send it to your TV, do not unveal what you are doing to the outside.
+Download and stream live (while the download is in progress) torrents with your browser, send it to your TV, as a total freerider do not unveal what you are doing to the outside.
 
 ## Presentation
 
@@ -63,11 +63,16 @@ To use it:
 	
 	node freerider.js [magnet]
 	
-	The file being downloaded will appear in the store directory (myvideo.mp4) or in a new folder in this directory if there are several files.
+	The file being downloaded will appear in the store directory (myvideo.mp4) or in a new folder in this
+	directory if there are several files.
 	
-	Wait (looking at the messages "got for torrent myvideo.mp4 of size 1 GB 220 kBytes of data - Piece number x - remaining y MB - speed: z kbps - time left: 0h15 - number of peers: n") that some MBytes have been downloaded and open your browser with an url pointing to your store/myvideo.mp4 directory (ie file:///D:/torrent/torrent-live/store/myvideo.mp4)
+	Wait (looking at the messages "got for torrent myvideo.mp4 of size 1 GB 220 kBytes of data -
+	Piece number x - remaining y MB - speed: z kbps - time left: 0h15 - number of peers: n")
+	that some MBytes have been downloaded and open your browser with an url pointing to your
+	store/myvideo.mp4 directory (ie file:///D:/torrent/torrent-live/store/myvideo.mp4)
 	
-	The default path is the store directory in the torrent-live directory, this is where the files will be stored if you don't specify the path parameter.
+	The default path is the store directory in the torrent-live directory, this is where
+	the files will be stored if you don't specify the path parameter.
 	
 	Examples:
 	
