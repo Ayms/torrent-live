@@ -13,6 +13,8 @@ The streaming will start while the file is being downloaded.
 
 If you have something like Chromecast you can use the Chrome browser and the Cast extension (https://chrome.google.com/webstore/detail/google-cast/boadgeojelhgndaghljhdicfkmllpafd) to send it to your TV.
 
+For now h264/mp4 and webm files seem to be working well, probably we will integrate some adaptations on the fly for other formats, feedbacks welcome.
+
 ## Freerider
 
 torrent-live does behave like a total freerider, so unlike usual bittorrent clients, nobody can know what you are doing and you are not participating to the torrents.
@@ -28,6 +30,8 @@ The messages on the console inform you about what torrent-live is doing and prog
 You can keep or remove the file(s) at the end of the download, in any case you are never seeding/sending to others what you have downloaded.
 
 Data are not retrieved sequentially but are stored sequentially, you can stop/resume a download/streaming at any time.
+
+If for any reasons the player stops inside the browser (or bug) then refresh the page and restart the video where it stopped.
 
 If you want more advanced security/anonymity features you can checkout [Peersm](http://www.peersm.com) and [try it](http://peersm.com/peersm), see [node-Tor](https://github.com/Ayms/node-Tor) for the technical details.
 
