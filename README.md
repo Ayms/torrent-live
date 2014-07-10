@@ -27,6 +27,8 @@ The messages on the console inform you about what torrent-live is doing and prog
 
 You can keep or remove the file(s) at the end of the download, in any case you are never seeding/sending to others what you have downloaded.
 
+Data is not retrieved sequentially but is stored sequentially, you can stop/resume a download/streaming at any time.
+
 If you want more advanced security/anonymity features you can checkout [Peersm](http://www.peersm.com) and [try it](http://peersm.com/peersm), see [node-Tor](https://github.com/Ayms/node-Tor) for the technical details.
 
 ## Installation and use (Windows, Mac, Linux):
