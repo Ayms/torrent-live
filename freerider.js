@@ -18,8 +18,10 @@ var bittorrent=require('./index.js'),
 	SPEED=100000;
 
 /*
-node freerider.js [magnet] [path]
+Use:
+node freerider.js [infohash]
 node freerider.js [magnet]
+node freerider.js [magnet] [path]
 */
 
 if (process.argv) {
@@ -40,6 +42,10 @@ if (process.argv) {
 path=path||'./store';
 
 magnet=magnet||'magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e';
+
+if (magnet.length===40) {
+	magnet='magnet:?xt=urn:btih:'+magnet;
+};
 
 console.log(path+' '+magnet);
 

@@ -13,17 +13,15 @@ The streaming will start while the file is being downloaded.
 
 If you have something like Chromecast you can use the Chrome browser and the Cast extension (https://chrome.google.com/webstore/detail/google-cast/boadgeojelhgndaghljhdicfkmllpafd) to send it to your TV.
 
-For now h264/mp4 and webm files seem to be working well, probably we will integrate some adaptations on the fly for other formats, feedbacks welcome.
-
 ## Freerider
 
 torrent-live does behave like a total freerider, so unlike usual bittorrent clients, nobody can know what you are doing and you are not participating to the torrents.
 
 It is of course not using trackers, only magnet links and the bittorrent Distributed Hash Table (DHT).
 
-The only ones that know something about you are those you are connected to, you can see their IP addresses on the console, it's unlikely that these ones, which are sharing the content, are tracking you.
+The only ones that know something about you are those you are connected to, you can see their IP addresses on the console, in most of cases it's unlikely that these ones, which are sharing the content, are tracking you.
 
-So you just retrieve the pieces, do not advertise yourself and do not share anything, therefore your activity is difficult to detect.
+So you just retrieve the pieces, do not advertise yourself and do not share anything, therefore your activity is difficult (but not impossible) to detect.
 
 The messages on the console inform you about what torrent-live is doing and progress status.
 
@@ -35,11 +33,15 @@ If for any reasons the player stops inside the browser (or bug) then refresh the
 
 If you want more advanced security/anonymity features you can checkout [Peersm](http://www.peersm.com) and [try it](http://peersm.com/peersm), see [node-Tor](https://github.com/Ayms/node-Tor) for the technical details.
 
+## No Freerider
+
+If you don't like to be a freerider, then deactivate the option and seed the downloaded/streamed files with another bittorrent client when you are finished.
+
 ## Installation and use (Windows, Mac, Linux):
 
 Install nodejs v0.11.9 for your platform (http://nodejs.org/dist/v0.11.9/) or the official nodejs release (http://nodejs.org/download/)
 
-For those that are not familiar with nodejs, on windows for example:
+For those who are not familiar with nodejs, on windows for example:
 
 	With your browser download:
 
@@ -63,11 +65,15 @@ To use it:
 	
 	Run from the command line:
 	
-	node freerider.js [magnet] [path]
+	node freerider.js [infohash]
 	
 	or
 	
 	node freerider.js [magnet]
+	
+	or
+	
+	node freerider.js [magnet] [path]
 	
 The file being downloaded will appear in the 'store' directory (myvideo.mp4) or in a new folder in this directory if there are several files.
 
@@ -78,9 +84,11 @@ The default path is the 'store' directory in the 'torrent-live' directory, this 
 	
 	Examples:
 	
-	node freerider.js 'magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e'
+	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e
 	
-	node freerider.js 'magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e' 'D:/myvideos'
+	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e
+	
+	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos'
 	
 ## Tips/Recommendations:
 
