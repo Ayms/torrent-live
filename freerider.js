@@ -46,8 +46,6 @@ if (magnet.length<60) {
 	magnet='magnet:?xt=urn:btih:'+magnet;
 };
 
-console.log(magnet.length);
-
 if (magnet.length>60) {
 	console.log('Wrong magnet format, please enter it as: ef330b39f4801d25b4245212e75a38634bfc856e or magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e');
 	process.exit();
