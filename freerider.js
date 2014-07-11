@@ -28,10 +28,9 @@ if (process.argv) {
 	if (process.argv.length>1) {
 		var args=process.argv.splice(2);
 		if (args.length) {
-			if (args.length>2) {
-				streamlive=true
-				magnet=args[1];
-				path=args[2];
+			if (args.length>1) {
+				magnet=args[0];
+				path=args[1];
 			} else {
 				magnet=args[0]
 			};
@@ -43,8 +42,15 @@ path=path||'./store';
 
 magnet=magnet||'magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e';
 
-if (magnet.length===40) {
+if (magnet.length<60) {
 	magnet='magnet:?xt=urn:btih:'+magnet;
+};
+
+console.log(magnet.length);
+
+if (magnet.length>60) {
+	console.log('Wrong magnet format, please enter it as: ef330b39f4801d25b4245212e75a38634bfc856e or magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e');
+	process.exit();
 };
 
 console.log(path+' '+magnet);

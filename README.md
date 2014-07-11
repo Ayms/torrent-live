@@ -1,7 +1,7 @@
 torrent-live
 ===
 
-Download and stream live (while the download is in progress) torrents with your browser, send it to your TV, as a total freerider do not unveal what you are doing to the outside, easy to use and real time.
+Download and stream live (while the download is in progress) torrents with your browser, send it to your TV, as a total freerider minimize what you are unveiling to the outside regarding your activities, real-time, easy to install, easy to use.
 
 ## Presentation
 
@@ -13,13 +13,19 @@ The streaming will start while the file is being downloaded.
 
 If you have something like Chromecast you can use the Chrome browser and the Cast extension (https://chrome.google.com/webstore/detail/google-cast/boadgeojelhgndaghljhdicfkmllpafd) to send it to your TV.
 
+## Supported formats
+
+All usual audio/video formats are supported inside browsers (h264/mp4, webm, avi, mkv, etc), depending on what you are using you might encounter some issues while sending the flow to your TV (like Chromecast apparently not supporting the avi format), if the browser can not play a file it's probably because it does not support the codecs used for this file.
+
+If you need to convert a file you can use applications like VLC, but the converted file might be broken, we usually follow what is indicated in Links section of [Peersm](http://www.peersm.com), 'Adding and audio/video - simple way' and run the specified 'very intuitive' command to convert into webm.
+
 ## Freerider
 
-torrent-live does behave like a total freerider, so unlike usual bittorrent clients, nobody can know what you are doing and you are not participating to the torrents.
+torrent-live does behave like a total freerider, so unlike usual bittorrent clients, you minimize the visibility of your activities and you are not participating to the torrents.
 
 It is of course not using trackers, only magnet links and the bittorrent Distributed Hash Table (DHT).
 
-The only ones that know something about you are those you are connected to, you can see their IP addresses on the console, in most of cases it's unlikely that these ones, which are sharing the content, are tracking you.
+The only ones who know something about you are those you are connected to, you can see their IP addresses on the console, in most cases it's unlikely that these ones, which are sharing the content, are tracking you.
 
 So you just retrieve the pieces, do not advertise yourself and do not share anything, therefore your activity is difficult (but not impossible) to detect.
 
@@ -61,7 +67,10 @@ For different reasons we don't use npm, so to install torrent-live:
 	
 To use it:
 
-	Go in torrent/torrent-live directory
+	Open the command line console (on Windows, type 'cmd' in the search/find input in the start menu
+	or in the find icon that appears on windows 8 when you pass the mouse at the right of the screen)
+
+	Go in torrent/torrent-live directory (example: cd D:\torrent\torrent-live)
 	
 	Run from the command line:
 	
@@ -75,7 +84,7 @@ To use it:
 	
 	node freerider.js [magnet] [path]
 	
-The file being downloaded will appear in the 'store' directory (myvideo.mp4) or in a new folder in this directory if there are several files.
+The file being downloaded will appear in the 'store' (or in the path directory that you have specified) directory (myvideo.mp4) or in a new folder in this directory if there are several files.
 
 Wait (looking at the messages "got for torrent myvideo.mp4 of size 1 GB 220 kBytes of data - Piece number x - remaining y MB - speed: z kbps - time left: 0h15 - number of peers: n")
 that some MBytes have been downloaded and open your browser with an url pointing to your store/myvideo.mp4 directory (ie file:///D:/torrent/torrent-live/store/myvideo.mp4)
