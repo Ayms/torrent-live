@@ -17,33 +17,9 @@ If you have something like Chromecast you can use the Chrome browser and the Cas
 
 All usual audio/video formats are supported inside browsers (h264/mp4, webm, avi, mkv, etc), depending on what you are using you might encounter some issues while sending the flow to your TV (like Chromecast apparently not supporting the avi format), if the browser can not play a file it's probably because it does not support the codecs used for this file.
 
-If you need to convert a file you can use applications like VLC, but the converted file might be broken, we usually follow what is indicated in Links section of [Peersm](http://www.peersm.com), 'Adding and audio/video - simple way' and run the specified 'very intuitive' command to convert into a webm format. Another advantage of doing this is that the file will be formatted for adaptive streaming and if it is seeded people will be able to download and stream it anonymously using [Peersm application](http://www.peersm.com)
+If you need to convert some files, please see the 'File conversion' section below.
 
-## Freerider
-
-torrent-live does behave like a total freerider, so unlike usual bittorrent clients, you minimize the visibility of your activities and you are not participating to the torrents.
-
-It is of course not using trackers, only magnet links and the bittorrent Distributed Hash Table (DHT).
-
-The only ones who know something about you are those you are connected to, you can see their IP addresses on the console, in most cases it's unlikely that these ones, which are sharing the content, are tracking you.
-
-So you just retrieve the pieces, do not advertise yourself and do not share anything, therefore your activity is difficult (but not impossible) to detect.
-
-The messages on the console inform you about what torrent-live is doing and progress status.
-
-You can keep or remove the file(s) at the end of the download, in any case you are never seeding/sending to others what you have downloaded.
-
-Data are not retrieved sequentially but are stored sequentially, you can stop/resume a download/streaming at any time.
-
-If for any reasons the player stops inside the browser (or bug) then refresh the page and restart the video where it stopped.
-
-If you want more advanced security/anonymity features you can checkout [Peersm](http://www.peersm.com) and [try it](http://peersm.com/peersm), see [node-Tor](https://github.com/Ayms/node-Tor) for the technical details.
-
-## No Freerider
-
-If you don't like to be a freerider, then deactivate the option and seed the downloaded/streamed files with another bittorrent client when you are finished.
-
-## Installation and use (Windows, Mac, Linux):
+## Installation and use (Windows, Mac, Linux)
 
 Install nodejs v0.11.9 for your platform (http://nodejs.org/dist/v0.11.9/) or the official nodejs release (http://nodejs.org/download/)
 
@@ -98,8 +74,36 @@ The default path is the 'store' directory in the 'torrent-live' directory, this 
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e
 	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos'
-	
-## Tips/Recommendations:
+
+## Freerider
+
+torrent-live does behave like a total freerider, so unlike usual bittorrent clients, you minimize the visibility of your activities and you are not participating to the torrents.
+
+It is of course not using trackers, only magnet links and the bittorrent Distributed Hash Table (DHT).
+
+The only ones who know something about you are those you are connected to, you can see their IP addresses on the console, in most cases it's unlikely that these ones, which are sharing the content, are tracking you.
+
+So you just retrieve the pieces, do not advertise yourself and do not share anything, therefore your activity is difficult (but not impossible) to detect.
+
+The messages on the console inform you about what torrent-live is doing and progress status.
+
+You can keep or remove the file(s) at the end of the download, in any case you are never seeding/sending to others what you have downloaded.
+
+Data are not retrieved sequentially but are stored sequentially, you can stop/resume a download/streaming at any time.
+
+If for any reasons the player stops inside the browser (or bug) then refresh the page and restart the video where it stopped.
+
+If you want more advanced security/anonymity features you can checkout [Peersm](http://www.peersm.com) and [try it](http://peersm.com/peersm), see [node-Tor](https://github.com/Ayms/node-Tor) for the technical details.
+
+## No Freerider
+
+If you don't like to be a freerider, then deactivate the option and seed the downloaded/streamed files with another bittorrent client when you are finished.
+
+## File conversion
+
+If you need to convert a file you can use applications like VLC, but the converted file might be broken, we usually follow what is indicated in Links section of [Peersm](http://www.peersm.com), 'Adding and audio/video - simple way' and run the specified 'very intuitive' command to convert into a webm format. Another advantage of doing this is that the file will be formatted for adaptive streaming and if it is seeded people will be able to download and stream it anonymously using [Peersm application](http://www.peersm.com)
+
+## Tips/Recommendations
 
 Just use simple magnet links formatted as the above examples with the infohash information only ('ef330b39f4801d25b4245212e75a38634bfc856e' here), do not use other formats, it's easy to retrieve the infohash information on the internet or to deduct it from trackers links.
 
