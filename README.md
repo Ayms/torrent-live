@@ -17,7 +17,7 @@ If you have something like Chromecast you can use the Chrome browser and the Cas
 
 All usual audio/video formats are supported inside browsers (h264/mp4, webm, avi, mkv, etc), depending on what you are using you might encounter some issues while sending the flow to your TV (like Chromecast apparently not supporting the avi format), if the browser can not play a file it's probably because it does not support the codecs used for this file.
 
-If you need to convert a file you can use applications like VLC, but the converted file might be broken, we usually follow what is indicated in Links section of [Peersm](http://www.peersm.com), 'Adding and audio/video - simple way' and run the specified 'very intuitive' command to convert into webm.
+If you need to convert a file you can use applications like VLC, but the converted file might be broken, we usually follow what is indicated in Links section of [Peersm](http://www.peersm.com), 'Adding and audio/video - simple way' and run the specified 'very intuitive' command to convert into a webm format. Another advantage of doing this is that the file will be formatted for adaptive streaming and if it is seeded people will be able to download and stream it anonymously using [Peersm application](http://www.peersm.com)
 
 ## Freerider
 
