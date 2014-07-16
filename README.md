@@ -27,17 +27,17 @@ For those who are not familiar with nodejs, on windows for example:
 
 	With your browser download:
 
-	http://nodejs.org/dist/v0.11.9/node-v0.11.9-x86.msi (5.5 MB)
-
+http://nodejs.org/dist/v0.11.9/node-v0.11.9-x86.msi
+	
 	or for a 64 bits conf:
 
-	http://nodejs.org/dist/v0.11.9/x64/node-v0.11.9-x64.msi
+http://nodejs.org/dist/v0.11.9/x64/node-v0.11.9-x64.msi
 
 Then execute the files, this will install node.
 
 For different reasons we don't use npm, so to install torrent-live:
 
-	Download http://www.peersm.com/torrent-live.zip
+Download http://www.peersm.com/torrent-live.zip
 	
 	Create for example a 'torrent' directory and unzip torrent-live.zip
 	
@@ -63,7 +63,7 @@ To use it:
 The file being downloaded will appear in the 'store' directory (or in the path directory that you have specified) or in a new folder in this directory if there are several files.
 
 Wait (looking at the messages "got for torrent myvideo.mp4 of size 1 GB 220 kBytes of data - Piece number x - remaining y MB - speed: z kbps - time left: 0h15 - number of peers: n")
-that some MBytes have been downloaded and open your browser with an url pointing to your store/myvideo.mp4 directory (ie file:///D:/torrent/torrent-live/store/myvideo.mp4)
+that some MBytes have been downloaded and open your browser with an url pointing to your store/myvideo.mp4 directory (ie <b>file:///D:/torrent/torrent-live/store/myvideo.mp4</b>)
 
 The default path is the 'store' directory in the 'torrent-live' directory, this is where the files will be stored if you don't specify the path parameter.
 	
