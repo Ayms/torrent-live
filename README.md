@@ -13,6 +13,10 @@ The streaming will start while the file is being downloaded.
 
 If you have something like Chromecast you can use the Chrome browser and the Cast extension (https://chrome.google.com/webstore/detail/google-cast/boadgeojelhgndaghljhdicfkmllpafd) to send it to your TV.
 
+![torrent1](https://github.com/Ayms/torrent-live/blob/master/torrent1.png)
+![torrent2](https://github.com/Ayms/torrent-live/blob/master/torrent2.png)
+![torrent3](https://github.com/Ayms/torrent-live/blob/master/torrent3.png)
+
 ## Supported formats
 
 All usual audio/video formats are supported inside browsers (h264/mp4, webm, avi, mkv, etc), depending on what you are using you might encounter some issues while sending the flow to your TV (like Chromecast apparently not supporting the avi format), if the browser can not play a file it's probably because it does not support the codecs used for this file.
@@ -35,7 +39,7 @@ http://nodejs.org/dist/v0.11.9/x64/node-v0.11.9-x64.msi
 
 Then execute the files, this will install node.
 
-For different reasons we don't use npm, so to install torrent-live:
+To install torrent-live:
 
 Download http://www.peersm.com/torrent-live.zip
 	
