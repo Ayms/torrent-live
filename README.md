@@ -13,9 +13,9 @@ The streaming will start while the file is being downloaded.
 
 If you have something like Chromecast you can use the Chrome browser and the Cast extension (https://chrome.google.com/webstore/detail/google-cast/boadgeojelhgndaghljhdicfkmllpafd) to send it to your TV.
 
-![torrent1](https://raw.github.com/Ayms/torrent-live/blob/master/torrent1.png)
-![torrent2](https://raw.github.com/torrent-live/blob/master/torrent2.png)
-![torrent3](https://raw.github.com/Ayms/torrent-live/blob/master/torrent3.png)
+![torrent1](https://raw.github.com/Ayms/torrent-live/master/torrent1.png)
+![torrent2](https://raw.github.com/torrent-live/master/torrent2.png)
+![torrent3](https://raw.github.com/Ayms/torrent-live/master/torrent3.png)
 
 ## Supported formats
 
