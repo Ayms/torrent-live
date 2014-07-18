@@ -132,7 +132,7 @@ This is still experimental and subject to change, some ideas were inspired from 
 - freerider option to true: do not advertise yourself, do not answer to queries. Due to this some peers might disconnect but the main seeders usually don't, so the swarm will oscillate around 20 peers and stabilize after some time with supposedly good seeders (ie not spies)
 - the periodical check of the DHT still runs while the torrent is downloaded/streamed to remove real-time the new spies found and increment the blocklist
 
-*This does ensure that for sure the spies found are real spies.* Because they did announce themselves for a torrent that does not exist or that you are the only one to have (remember, torrent-live is not using trackers, only the DHT, so the only means for the spies to watch you is to detect what you are asking for when you walk the DHT to find the closest nodes and to register as having it, then wait for you to connect to them).
+#This does ensure that for sure the spies found are real spies.# Because they did announce themselves for a torrent that does not exist or that you are the only one to have (remember, torrent-live is not using trackers, only the DHT, so the only means for the spies to watch you is to detect what you are asking for when you walk the DHT to find the closest nodes and to register as having it, then wait for you to connect to them).
 
 A side effect is that you might block regular peers that are trying to anonymize themselves via a network like Tor or a VPN (in case the spies are doing the same), but that's not very important and marginal given the size of the bittorrent network. And anyway you don't hurt anybody since you are using your blocklist for your personal use.
 
