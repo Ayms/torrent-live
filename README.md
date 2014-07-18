@@ -119,27 +119,31 @@ To enable this option:
 	
 This will block already known spies and discover new ones while your are downloading/streaming, the real torrent will start after 5mn.
 	
-This is still experimental and subject to change, for now the methodology is the following:
+This is still experimental and subject to change, some ideas were inspired from this interesting thread: [P2P-hackers How do BitTorrent block lists get created?](http://lists.zooko.com/pipermail/p2p-hackers/2014-May/003236.html), for now the methodology is the following:
 
 - set a fake infohash close to the real one
-- announce yourself with the fake infohash, respond to queries (freerider option to false)
+- announce yourself with the fake infohash, respond to queries (freerider option set to false here)
 - walk the DHT periodically looking for the fake infohash
-- change your nodeID at each new walk with a random one to change your path in the DHT
-- register the spies found in a blocklist, register them in a file, no difference is made for Tor exit nodes, they will be blocked too 
-- start the real torrent after 5mn, use the closest nodes found for the fake infohash to retrieve the peers for the real one
-- find the peers for this torrent, connect to the first 20 ones not in the blocklist
+- change your nodeID at each new walk with a random one, so you change your path in the DHT
+- register the spies found in a blocklist, register them in a file, no difference is made for Tor exit nodes or VPNs, they will be blocked too 
+- start the real torrent after 5mn, use the closest nodes (not in the blocklist) found for the fake infohash to retrieve the peers for the real one, this prevents you from walking the DHT again saying to everybody what you are really looking for.(TODO, not implemented yet)
+- connect to the first 20 ones not in the blocklist
 - maintain a swarm of 20 peers, if one disconnects, replace it by another one in the peer list not contained in the blocklist
 - freerider option to true: do not advertise yourself, do not answer to queries. Due to this some peers might disconnect but the main seeders usually don't, so the swarm will oscillate around 20 peers and stabilize after some time with supposedly good seeders (ie not spies)
-- the periodical check of the DHT still runs while the torrent is downloaded/streamed to remove real-time the new spies found
-- for a new fake infohash, the spies arrive slowly but after some time they arrive massively
+- the periodical check of the DHT still runs while the torrent is downloaded/streamed to remove real-time the new spies found and increment the blocklist
 
-This does ensure that for sure the spies found are real spies.
+*This does ensure that for sure the spies found are real spies.* Because they did announce themselves for a torrent that does not exist or that you are the only one to have (remember, torrent-live is not using trackers, only the DHT, so the only means for the spies to watch you is to detect what you are asking for when you walk the DHT to find the closest nodes and to register as having it, then wait for you to connect to them).
+
+A side effect is that you might block regular peers that are trying to anonymize themselves via a network like Tor or a VPN (in case the spies are doing the same), but that's not very important and marginal given the size of the bittorrent network. And anyway you don't hurt anybody since you are using your blocklist for your personal use.
 
 It does not insure 100% that you will not connect to a spy but it seems to minimize a lot this risk, so what you are doing is difficult to detect.
 
+The spies might change their IP addresses among their service provider pool of addresses, therefore you could keep in the blocklist some addresses that do not correspond any longer to spies, again it does not seem to be a huge issue since torrent-live is updating the list real-time (TODO remove IP addresses not appearing as spies since some time in the blocklist).
+
 Apparently, for a new fake infohash the spies are slow to arrive at the begining, but arrive massively after some time.
 
-So you can learn about the spies without starting the torrent while running during some time:
+
+So you can learn about the spies without starting the torrent while running during a certain period:
 
 	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e findspiesonly
 	
@@ -149,7 +153,7 @@ So you can learn about the spies without starting the torrent while running duri
 
 ## File conversion
 
-If you need to convert a file you can use applications like VLC, but the converted file might be broken, we usually follow what is indicated in Links section of [Peersm](http://www.peersm.com), 'Adding and audio/video - simple way' and run the specified 'very intuitive' command to convert into a webm format. Another advantage of doing this is that the file will be formatted for adaptive streaming and if it is seeded people will be able to download and stream it anonymously using [Peersm application](http://www.peersm.com)
+If you need to convert a file you can use applications like VLC, but the converted file might be broken, we usually follow what is indicated in the Links section of [Peersm](http://www.peersm.com), 'Adding and audio/video - simple way' and run the specified 'very intuitive' command to convert into a webm format. Another advantage of doing this is that the file will be formatted for adaptive streaming and if it is seeded people will be able to download and stream it anonymously using [Peersm application](http://www.peersm.com)
 
 ## Tips/Recommendations
 
