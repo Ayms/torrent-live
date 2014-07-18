@@ -118,6 +118,8 @@ To enable this option:
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos' findspies
 	
 This will block already known spies and discover new ones while your are downloading/streaming, the real torrent will start after 5mn.
+
+![torrent1](https://raw.github.com/Ayms/torrent-live/master/spies.png)
 	
 This is still experimental and subject to change, some ideas were inspired from this interesting thread: [P2P-hackers How do BitTorrent block lists get created?](http://lists.zooko.com/pipermail/p2p-hackers/2014-May/003236.html), for now the methodology is the following:
 
