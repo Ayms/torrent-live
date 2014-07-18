@@ -83,6 +83,8 @@ The default path is the 'store' directory in the 'torrent-live' directory, this 
 
 torrent-live does behave like a total freerider, so unlike usual bittorrent clients, you minimize the visibility of your activities and you are not participating to the torrents.
 
+In addition if the option is set, torrent-live does detect the spies while you are downloading/streaming a torrent, please see the "Find spies" section below.
+
 It is of course not using trackers, only magnet links and the bittorrent Distributed Hash Table (DHT).
 
 The only ones who know something about you are those you are connected to, you can see their IP addresses on the console, in most cases it's unlikely that these ones, which are sharing the content, are tracking you.
@@ -102,6 +104,46 @@ If you want more advanced security/anonymity features you can checkout [Peersm](
 ## No Freerider
 
 If you don't like to be a freerider, then deactivate the option and seed the downloaded/streamed files with another bittorrent client when you are finished.
+
+## Findspies
+
+To enable this option:
+
+	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e findspies
+	
+	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e findspies
+	
+	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos' findspies
+	
+This will block already known spies and discover new ones while your are downloading/streaming, the real torrent will start after 5mn.
+	
+This is still experimental and subject to change, for now the methodology is the following:
+
+- set a fake infohash close to the real one
+- announce yourself with the fake infohash, respond to queries (freerider option to false)
+- walk the DHT periodically looking for the fake infohash
+- change your nodeID at each new walk
+- register the spies found in a blocklist, register them in a file, no difference is made for Tor exit nodes, they will be blocked too 
+- start the real torrent after 5mn
+- find the peers for this torrent, connect to the first 20 ones not in the blocklist
+- maintain a swarm of 20 peers, if one disconnects, replace it by another one in the peer list not contained in the blocklist
+- freerider option to true: do not advertise yourself, do not answer to queries. Due to this some peers might disconnect but the main seeders usually don't, so the swarm will oscillate around 20 peers and stabilize after some time with supposedly good seeders (ie not spies)
+- the periodical check of the DHT still runs while the torrent is downloaded/streamed to remove real-time the new spies found
+- for a new fake infohash, the spies arrive slowly but after some time they arrive massively
+
+This does ensure that for sure the spies found are real spies.
+
+It does not insure 100% that you will not connect to a spy but it seems to minimize a lot this risk, so what you are doing is difficult to detect.
+
+Apparently, for a new fake infohash the spies are slow to arrive at the begining, but arrive massively after some time.
+
+So you can learn about the spies without starting the torrent while running during some time:
+
+	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e findspiesonly
+	
+	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e findspiesonly
+	
+	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos' findspiesonly
 
 ## File conversion
 

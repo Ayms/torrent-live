@@ -107,16 +107,21 @@ var torrentStream = function(link, opts, cb) {
 	engine.amInterested = false;
 	engine.store = null;
 	engine.swarm = swarm;
-
 	var discovery = peerDiscovery(opts);
 	var blocked = blocklist(opts.blocklist);
+	
+	//modif
+	discovery.engine=engine;
+	engine.discovery=discovery;
+	engine.blocked=blocked;
 
 	discovery.on('peer', function(addr) {
 		//console.log('------------------- testing peer '+addr);
-		if (blocked.contains(addr.split(':')[0])) {
+		if (engine.blocked.contains(addr.split(':')[0])) {
 			engine.emit('blocked-peer', addr);
+			console.log('------------------- blocked spy '+addr);
 		} else {
-			//console.log('------------------- testing peer not blocked '+addr);
+			console.log('------------------- Peer found '+addr);
 			engine.emit('peer', addr);
 			engine.connect(addr);
 		}
@@ -207,7 +212,7 @@ var torrentStream = function(link, opts, cb) {
 			reservations[index] = null;
 			engine.bitfield.set(index, true);
 			//modif
-			if (opts.freerider) {
+			if (!opts.freerider) {
 				for (var i = 0; i < wires.length; i++) wires[i].have(index);
 			};
 
@@ -275,7 +280,7 @@ var torrentStream = function(link, opts, cb) {
 			var i = r.indexOf(null);
 			if (i === -1) i = r.length;
 			r[i] = wire;
-
+			
 			wire.request(index, offset, size, function(err, block) {
 				if (r[i] === wire) r[i] = null;
 
@@ -295,6 +300,7 @@ var torrentStream = function(link, opts, cb) {
 				if (sha1(buffer) !== torrent.pieces[index]) {
 					pieces[index] = piece(p.length);
 					engine.emit('invalid-piece', index, buffer);
+					console.log('--------------- invalid piece from ---'+ wire.peerAddress);
 					onupdatetick();
 
 					sources.forEach(function(wire) {
@@ -307,6 +313,7 @@ var torrentStream = function(link, opts, cb) {
 						wire.badPieceStrikes.push(now);
 
 						if (wire.badPieceStrikes.length > BAD_PIECE_STRIKES_MAX) {
+							console.log('--------------- blocked peer ---'+ wire.peerAddress);
 							engine.block(wire.peerAddress);
 						}
 					});
@@ -403,6 +410,7 @@ var torrentStream = function(link, opts, cb) {
 		var onwire = function(wire) {
 			wire.setTimeout(opts.timeout || REQUEST_TIMEOUT, function() {
 				engine.emit('timeout', wire);
+				console.log('wire timeout '+wire.peerAddress);
 				wire.destroy();
 			});
 
@@ -591,6 +599,7 @@ var torrentStream = function(link, opts, cb) {
 
 			// We know only infoHash here, not full infoDictionary.
 			// But infoHash is enough to connect to trackers and get peers.
+			
 			if (!buf) return discovery.setTorrent(link);
 
 			var torrent = parseTorrent(buf);
@@ -696,6 +705,10 @@ var torrentStream = function(link, opts, cb) {
 	};
 
 	engine.listen = function(port, cb) {
+		//modif
+		if (opts.freerider) {
+			return;
+		};
 		if (typeof port === 'function') return engine.listen(0, port);
 		engine.port = port || DEFAULT_PORT;
 		swarm.listen(engine.port, cb);
