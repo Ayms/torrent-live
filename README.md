@@ -124,9 +124,9 @@ This is still experimental and subject to change, for now the methodology is the
 - set a fake infohash close to the real one
 - announce yourself with the fake infohash, respond to queries (freerider option to false)
 - walk the DHT periodically looking for the fake infohash
-- change your nodeID at each new walk
+- change your nodeID at each new walk with a random one to change your path in the DHT
 - register the spies found in a blocklist, register them in a file, no difference is made for Tor exit nodes, they will be blocked too 
-- start the real torrent after 5mn
+- start the real torrent after 5mn, use the closest nodes found for the fake infohash to retrieve the peers for the real one
 - find the peers for this torrent, connect to the first 20 ones not in the blocklist
 - maintain a swarm of 20 peers, if one disconnects, replace it by another one in the peer list not contained in the blocklist
 - freerider option to true: do not advertise yourself, do not answer to queries. Due to this some peers might disconnect but the main seeders usually don't, so the swarm will oscillate around 20 peers and stabilize after some time with supposedly good seeders (ie not spies)
