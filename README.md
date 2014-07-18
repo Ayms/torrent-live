@@ -3,6 +3,8 @@ torrent-live
 
 Download and stream live (while the download is in progress) torrents with your browser, send it to your TV, as a total freerider minimize what you are unvealing to the outside regarding your activities, real-time, easy to install, easy to use.
 
+Avoid spies and people that are tracking you with the 'findspies' option.
+
 ## Presentation
 
 This is based on the excellent [torrent-stream](https://github.com/mafintosh/torrent-stream) (and common parts of [webtorrent](https://github.com/feross/webtorrent)) modules and is somewhere related to [torrent-mount](https://github.com/mafintosh/torrent-mount) but in a more simple way we believe.
