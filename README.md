@@ -142,7 +142,6 @@ The spies might change their IP addresses among their service provider pool of a
 
 Apparently, for a new fake infohash the spies are slow to arrive at the begining, but arrive massively after some time.
 
-
 So you can learn about the spies without starting the torrent while running during a certain period:
 
 	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e findspiesonly
