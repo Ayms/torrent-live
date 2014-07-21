@@ -164,7 +164,7 @@ If you need to convert a file you can use applications like VLC, but the convert
 
 Just use simple magnet links formatted as the above examples with the infohash information only ('ef330b39f4801d25b4245212e75a38634bfc856e' here), do not use other formats, it's easy to retrieve the infohash information on the internet or to deduct it from trackers links.
 
-The formats that work better are mp4 and webm, please try to find the corresponding magnet links, an option is being thought to be able to include and choose the subtitles if any. 
+The formats that work better are mp4 and webm, please try to use the corresponding magnet links, an option is being thought to be able to include and choose the subtitles if any. 
 
 Do not use trackers sites and do not follow their wrong and insecure recommendations, like not using the DHT.
 
