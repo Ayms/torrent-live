@@ -13,6 +13,8 @@ You just have to initiate a download (magnet:?xt=urn:btih:ef330b39f4801d25b42452
 
 The streaming will start while the file is being downloaded.
 
+If you are not using the 'findspies' option and you have already created a blocklist using the 'findspies' or 'findspiesonly' options previously or if you have created it by yourself, then it will systematically be used to block the related IP addresses, please see the 'Findspies' section below for more details.
+
 If you have something like Chromecast you can use the Chrome browser and the Cast extension (https://chrome.google.com/webstore/detail/google-cast/boadgeojelhgndaghljhdicfkmllpafd) to send it to your TV.
 
 ![torrent1](https://raw.github.com/Ayms/torrent-live/master/torrent1.png)
@@ -121,6 +123,8 @@ This will block already known spies and discover new ones while your are downloa
 
 ![torrent1](https://raw.github.com/Ayms/torrent-live/master/spies.png)
 	
+The IP addresses are stored in the 'spies.txt' file, the format is simply: "IP address1","IP address2",...,"IP addressN", (do not forget the last comma if you create it manually or import it)
+	
 This is still experimental and subject to change, some ideas were inspired from this interesting thread: [P2P-hackers How do BitTorrent block lists get created?](http://lists.zooko.com/pipermail/p2p-hackers/2014-May/003236.html), for now the methodology is the following:
 
 - set a fake infohash close to the real one
@@ -159,6 +163,8 @@ If you need to convert a file you can use applications like VLC, but the convert
 ## Tips/Recommendations
 
 Just use simple magnet links formatted as the above examples with the infohash information only ('ef330b39f4801d25b4245212e75a38634bfc856e' here), do not use other formats, it's easy to retrieve the infohash information on the internet or to deduct it from trackers links.
+
+The formats that work better are mp4 and webm, please try to find the corresponding magnet links, an option is being thought to be able to include and choose the subtitles if any. 
 
 Do not use trackers sites and do not follow their wrong and insecure recommendations, like not using the DHT.
 
