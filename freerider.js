@@ -118,7 +118,7 @@ console.log(path+' '+magnet);
 
 var infohash=magnet.split(':btih:')[1];
 
-fs.open('log.txt','w',function(err,fd) {
+fs.open('log-'+infohash+'.txt','w',function(err,fd) {
 	var oconsole=console.log.bind(console);
 	console.log=function(txt) {
 		oconsole(txt);
@@ -176,7 +176,7 @@ var onready=function() {
 	});
 };
 
-var onpeer = function(addr) {
+var onpeer=function(addr) {
 	var ip=addr.split(':')[0];
 	if (!blocked.contains(ip)) {
 		console.log('spy '+addr);
@@ -188,11 +188,11 @@ var onpeer = function(addr) {
 		};
 	} else {
 		nbspyknown++;
-		console.log('already known spy - total of known spies encountered :'+nbspyknown);
+		console.log('already known spy - total of known spies encountered :'+nbspyknown+' of '+(nbspy+Arrayblocklist.length));
 	};
 };
 
-var createDHT = function(infoHash,opts) {
+var createDHT=function(infoHash,opts) {
 	var table=dht(opts);
 	var nodeId=table.nodeId.toString('hex');
 	table.on('peer',onpeer);
@@ -244,7 +244,14 @@ var start=function(blocklist) {
 try {spies=fs.readFileSync('./spies.txt');} catch(ee) {}
 
 if (spies) {
+	//clean the blocklist, if several instances of torrent-live are run in parallel some entries can be duplicated
+	var clean=[];
 	Arrayblocklist=JSON.parse('['+spies.slice(0,spies.length-1).toString('utf8')+']');
+	Arrayblocklist.forEach(function(val) {if (clean.indexOf(val)===-1) {clean.push(val)}});
+	console.log(clean.length);
+	Arrayblocklist=clean;
+	clean=JSON.stringify(clean);
+	fs.writeFileSync('./spies.txt',clean.substr(1,clean.length-2)+',');
 	blocked=blocklist(Arrayblocklist);
 	console.log('Number of known spies: '+Arrayblocklist.length);
 } else {

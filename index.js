@@ -83,7 +83,8 @@ var torrentStream = function(link, opts, cb) {
 	}
 
 	var engine = new events.EventEmitter();
-	var swarm = pws(infoHash, opts.id, { size: (opts.connections || opts.size), speed: 10 });
+	//modif
+	var swarm = pws(infoHash, opts.id, { size: (opts.connections || opts.size), speed: 10, freerider: opts.freerider||null });
 	var torrentPath = path.join(opts.tmp, opts.name, infoHash + '.torrent');
 
 	if (cb) engine.on('ready', cb.bind(null, engine));
@@ -438,6 +439,9 @@ var torrentStream = function(link, opts, cb) {
 			});
 
 			wire.on('request', function(index, offset, length, cb) {
+				//modif
+				if (opts.freerider) return;
+
 				if (pieces[index]) return;
 				engine.store.read(index, { offset: offset, length: length }, function(err, buffer) {
 					if (err) return cb(err);
@@ -706,9 +710,8 @@ var torrentStream = function(link, opts, cb) {
 
 	engine.listen = function(port, cb) {
 		//modif
-		if (opts.freerider) {
-			return;
-		};
+		if (opts.freerider) return;
+
 		if (typeof port === 'function') return engine.listen(0, port);
 		engine.port = port || DEFAULT_PORT;
 		swarm.listen(engine.port, cb);
