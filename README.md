@@ -119,7 +119,7 @@ To enable this option:
 	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos' findspies
 	
-This will block already known spies and discover new ones while your are downloading/streaming, the real torrent will start after 5mn.
+This will block already known spies and discover new ones while your are downloading/streaming, the real torrent will start after 30s if a blocklist already exists or 5mn.
 
 ![torrent1](https://raw.github.com/Ayms/torrent-live/master/spies.png)
 	
@@ -132,7 +132,7 @@ This is still experimental and subject to change, some ideas were inspired from 
 - walk the DHT periodically looking for the fake infohash
 - change your nodeID at each new walk with a random one, so you change your path in the DHT
 - register the spies found in a blocklist, register them in a file, no difference is made for Tor exit nodes or VPNs, they will be blocked too 
-- start the real torrent after 5mn, use the closest nodes (not in the blocklist) found for the fake infohash to retrieve the peers for the real one, this prevents you from walking the DHT again saying to everybody what you are really looking for.(TODO, not implemented yet)
+- start the real torrent after 5mn, use the closest nodes (not in the blocklist) found for the fake infohash to retrieve the peers for the real one, this prevents you from walking the DHT again saying to everybody what you are really looking for.
 - connect to the first 20 ones not in the blocklist
 - maintain a swarm of 20 peers, if one disconnects, replace it by another one in the peer list not contained in the blocklist
 - freerider option to true: do not advertise yourself, do not answer to queries. Due to this some peers might disconnect but the main seeders usually don't, so the swarm will oscillate around 20 peers and stabilize after some time with supposedly good seeders (ie not spies)
