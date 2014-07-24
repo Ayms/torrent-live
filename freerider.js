@@ -39,8 +39,10 @@ var bittorrent=require('./index.js'),
 	blocklist=require('./lib/blocklist.js'),
 	fs=require('fs'),
 	torrent,
-	Arrayblocklist,
+	ini_dht,
+	Arrayblocklist=[],
 	blocked,
+	knownspies=[],
 	closest,
 	spies,
 	magnet,
@@ -49,10 +51,11 @@ var bittorrent=require('./index.js'),
 	findspiesonly,
 	MB=1048576,
 	SPEED=100000,
-	START=5*60*1000,
+	START,
+	RETRY=10*1000,
 	nbspy=0,
-	nbspyknown=0,
 	myPort,
+	infohash,
 	fakeinfohash,
 	NB_FILES,
 	T0;
@@ -71,6 +74,13 @@ node freerider.js [infohash] findspiesonly
 node freerider.js [magnet] findspiesonly
 node freerider.js [magnet] [path] findspiesonly
 */
+
+process.on('uncaughtException', function (err) {
+		var fd=fs.openSync('./debug.txt','a');
+		fs.writeSync(fd,(new Date().toDateString())+' '+(new Date().toTimeString()));
+		fs.writeSync(fd,err.stack+'\n');	
+		fs.closeSync(fd);
+});
 
 if (process.argv) {
 	if (process.argv.length>1) {
@@ -116,7 +126,7 @@ if (magnet.length>60) {
 
 console.log(path+' '+magnet);
 
-var infohash=magnet.split(':btih:')[1];
+infohash=magnet.split(':btih:')[1];
 
 fs.open('log-'+infohash+'.txt','w',function(err,fd) {
 	var oconsole=console.log.bind(console);
@@ -131,6 +141,23 @@ var writefile=function(file,txt) {
 	fs.open(file,'a',function(err,fd) {
 		fs.write(fd,txt,function(){});
 	});
+};
+
+var onsettorrent=function() {
+	if (ini_dht.closest_from_infohash) {
+		console.log('settorrent dht ready');
+		ini_dht.removeListener('peer',onpeer);
+		ini_dht.on('peer',function(addr) {torrent.discovery.emit('peer', addr)});
+		var closest_nodes=ini_dht.closest_from_infohash;
+		closest_nodes.forEach(function (contact) {
+			var addr=contact.addr;
+			console.log('sendgetpeer to '+addr+' for '+infohash);
+			ini_dht._sendGetPeers(addr,infohash,function() {});
+		});
+	} else {
+		console.log('settorrent dht not ready, retry later');
+		setTimeout(onsettorrent,RETRY);
+	};
 };
 
 var onready=function() {
@@ -179,16 +206,19 @@ var onready=function() {
 var onpeer=function(addr) {
 	var ip=addr.split(':')[0];
 	if (!blocked.contains(ip)) {
-		console.log('spy '+addr);
+		console.log('new spy '+addr);
 		nbspy++;
 		blocked.add(ip);
+		Arrayblocklist.push(ip);
 		writefile('spies.txt','"'+ip+'",');
 		if (torrent) {
 			torrent.blocked=blocked;
 		};
 	} else {
-		nbspyknown++;
-		console.log('already known spy - total of known spies encountered :'+nbspyknown+' of '+(nbspy+Arrayblocklist.length));
+		if (knownspies.indexOf(ip)===-1) {
+			knownspies.push(ip);
+		};
+		console.log('already known spy - total of known spies encountered :'+knownspies.length+' of '+Arrayblocklist.length);
 	};
 };
 
@@ -202,6 +232,9 @@ var createDHT=function(infoHash,opts) {
 	});
 	table.on('closest',function() {
 		console.log('announcing');
+		if (!closest) {
+			ini_dht=table;
+		};
 		closest=table.closest_from_infohash;
 		closest.forEach(function (contact) {
 			var addr=contact.addr;
@@ -209,21 +242,21 @@ var createDHT=function(infoHash,opts) {
 			var token=table._generateToken(addrData[0]);
 			table._sendAnnouncePeer(addr,fakeinfohash,myPort,token,function(err,res) {});
 		});
-		table.destroy();
+		if (table!==ini_dht) {
+			table.destroy();
+		};
 		createDHT(infoHash,{debug:false,freerider:false});
-		/*launch real torrent
-		closest.forEach(function (contact) {var addr=contact.addr;dht._sendGetPeers(addr,infohash,function() {}););
-		*/
 	});
 };
 
 var start_torrent=function(blocklist) {
 	console.log('-------------- start torrent --------------------');
-	torrent=bittorrent(magnet,{blocklist:blocklist||null,connections:20,path:path,verify:true,dht:true,debug:false,freerider:true});
+	torrent=bittorrent(magnet,{blocklist:blocklist||null,connections:20,path:path,verify:true,debug:false,freerider:true,dht:dht});
+	torrent.on('setTorrent',onsettorrent);
 	torrent.on('ready',onready);
 };
 
-var start=function(blocklist) {
+var start=function() {
 	if (findspies) {
 		var last=infohash.slice(infohash.length-1);
 		myPort=parseInt(Math.random()*10000+35000);
@@ -234,10 +267,10 @@ var start=function(blocklist) {
 		console.log('fake infohash '+fake);
 		createDHT(fakeinfohash,{debug:false,freerider:false});
 		if (!findspiesonly) {
-			setTimeout(function() {start_torrent(blocklist)},START);
+			setTimeout(function() {start_torrent(Arrayblocklist)},START);
 		};
 	} else {
-		start_torrent(blocklist);
+		start_torrent(Arrayblocklist);
 	};
 };
 
@@ -258,4 +291,6 @@ if (spies) {
 	blocked=blocklist([]);
 };
 
-start(Arrayblocklist);
+START=Arrayblocklist.length?(30*1000):(5*60*1000);
+
+start();
