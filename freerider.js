@@ -144,19 +144,21 @@ var writefile=function(file,txt) {
 };
 
 var onsettorrent=function() {
-	if (ini_dht.closest_from_infohash) {
-		console.log('settorrent dht ready');
-		ini_dht.removeListener('peer',onpeer);
-		ini_dht.on('peer',function(addr) {torrent.discovery.emit('peer', addr)});
-		var closest_nodes=ini_dht.closest_from_infohash;
-		closest_nodes.forEach(function (contact) {
-			var addr=contact.addr;
-			console.log('sendgetpeer to '+addr+' for '+infohash);
-			ini_dht._sendGetPeers(addr,infohash,function() {});
-		});
-	} else {
-		console.log('settorrent dht not ready, retry later');
-		setTimeout(onsettorrent,RETRY);
+	if (findspies) {
+		if (ini_dht.closest_from_infohash) {
+			console.log('settorrent dht ready');
+			ini_dht.removeListener('peer',onpeer);
+			ini_dht.on('peer',function(addr) {torrent.discovery.emit('peer', addr)});
+			var closest_nodes=ini_dht.closest_from_infohash;
+			closest_nodes.forEach(function (contact) {
+				var addr=contact.addr;
+				console.log('sendgetpeer to '+addr+' for '+infohash);
+				ini_dht._sendGetPeers(addr,infohash,function() {});
+			});
+		} else {
+			console.log('settorrent dht not ready, retry later');
+			setTimeout(onsettorrent,RETRY);
+		};
 	};
 };
 
@@ -251,7 +253,7 @@ var createDHT=function(infoHash,opts) {
 
 var start_torrent=function(blocklist) {
 	console.log('-------------- start torrent --------------------');
-	torrent=bittorrent(magnet,{blocklist:blocklist||null,connections:20,path:path,verify:true,debug:false,freerider:true,dht:dht});
+	torrent=bittorrent(magnet,{blocklist:blocklist||null,connections:20,path:path,verify:true,debug:false,freerider:true,dht:ini_dht});
 	torrent.on('setTorrent',onsettorrent);
 	torrent.on('ready',onready);
 };
