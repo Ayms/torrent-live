@@ -152,8 +152,13 @@ var onsettorrent=function() {
 			var closest_nodes=ini_dht.closest_from_infohash;
 			closest_nodes.forEach(function (contact) {
 				var addr=contact.addr;
-				console.log('sendgetpeer to '+addr+' for '+infohash);
-				ini_dht._sendGetPeers(addr,infohash,function() {});
+				var ip=addr.split(':')[0];
+				if (!blocked.contains(ip)) {
+					console.log('sendgetpeer to '+addr+' for '+infohash);
+					ini_dht._sendGetPeers(addr,infohash,function() {});
+				} else {
+					console.log('sendgetpeer blocked to known spy '+addr);
+				};
 			});
 		} else {
 			console.log('settorrent dht not ready, retry later');

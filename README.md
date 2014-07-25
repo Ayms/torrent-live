@@ -132,7 +132,7 @@ This is still experimental and subject to change, some ideas were inspired from 
 - walk the DHT periodically looking for the fake infohash
 - change your nodeID at each new walk with a random one, so you change your path in the DHT
 - register the spies found in a blocklist, register them in a file, no difference is made for Tor exit nodes or VPNs, they will be blocked too 
-- start the real torrent after 30s if a blocklist exists (time to get the closest node) or 5mn, use the closest nodes (not in the blocklist) found for the fake infohash to retrieve the peers for the real one, this prevents you from walking the DHT again saying to everybody what you are really looking for.
+- start the real torrent after 30s if a blocklist exists (average time to get the closest nodes) or 5mn, use the closest nodes (not in the blocklist) found for the fake infohash to retrieve the peers for the real one, this prevents you from walking the DHT again saying to everybody what you are really looking for.
 - connect to the first 20 ones not in the blocklist
 - maintain a swarm of 20 peers, if one disconnects, replace it by another one in the peer list not contained in the blocklist
 - freerider option to true: do not advertise yourself, do not answer to queries. Due to this some peers might disconnect but the main seeders usually don't, so the swarm will oscillate around 20 peers and stabilize after some time with supposedly good seeders (ie not spies)
@@ -142,19 +142,19 @@ This is still experimental and subject to change, some ideas were inspired from 
 
 A side effect is that you might block regular peers that are trying to anonymize themselves via a network like Tor or a VPN (in case the spies are doing the same), but that's not very important and marginal given the size of the bittorrent network. And anyway you don't hurt anybody since you are using your blocklist for your personal use.
 
-It does not insure 100% that you will not connect to a spy but it seems to minimize a lot this risk, so what you are doing is difficult to detect.
+It does not insure 100% that you will not connect to a spy but it does minimize a lot this risk, so what you are doing is difficult to detect.
 
 The spies might change their IP addresses among their service provider pool of addresses, therefore you could keep in the blocklist some addresses that do not correspond any longer to spies, again it does not seem to be a huge issue since torrent-live is updating the list real-time (TODO remove IP addresses not appearing as spies since some time in the blocklist).
 
-Apparently, for a new fake infohash the spies are slow to arrive at the begining, but arrive massively after some time.
+Apparently, for a new infohash the spies are slow to arrive at the begining, but arrive massively after some time.
 
-So you can learn about the spies without starting the torrent while running during a certain period:
+If the infohash is the one of a particularly monitored torrent, a lot of spies are discovered quickly.
+
+So, assuming that this particularly monitored infohash is 'ef330b39f4801d25b4245212e75a38634bfc856e', you can learn about the spies without starting the torrent and before doing it while running during a certain period:
 
 	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e findspiesonly
 	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e findspiesonly
-	
-	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos' findspiesonly
 
 ## File conversion
 
