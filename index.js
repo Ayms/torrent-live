@@ -24,8 +24,9 @@ var CHOKE_TIMEOUT = 5000;
 var REQUEST_TIMEOUT = 30000;
 var SPEED_THRESHOLD = 3 * piece.BLOCK_SIZE;
 var DEFAULT_PORT = 6881;
-
-var BAD_PIECE_STRIKES_MAX = 3;
+//modif
+//var BAD_PIECE_STRIKES_MAX = 3;
+var BAD_PIECE_STRIKES_MAX = 1;
 var BAD_PIECE_STRIKES_DURATION = 120000; // 2 minutes
 
 var RECHOKE_INTERVAL = 10000;
@@ -115,6 +116,8 @@ var torrentStream = function(link, opts, cb) {
 	discovery.engine=engine;
 	engine.discovery=discovery;
 	engine.blocked=blocked;
+	
+	console.log('Blocklist length '+opts.blocklist.length);
 
 	discovery.on('peer', function(addr) {
 		//console.log('------------------- testing peer '+addr);
