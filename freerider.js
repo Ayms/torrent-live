@@ -222,6 +222,7 @@ var onready=function() {
 						wire.block_timeout=true;
 						wire.on('timeout',function() {
 							torrent.swarm._remove(wire.peerAddress);
+							console.log('request timeout, add as spy');
 							onpeer(wire.peerAddress);
 						});
 					};

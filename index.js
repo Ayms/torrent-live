@@ -123,7 +123,7 @@ var torrentStream = function(link, opts, cb) {
 		//console.log('------------------- testing peer '+addr);
 		if (engine.blocked.contains(addr.split(':')[0])) {
 			engine.emit('blocked-peer', addr);
-			console.log('------------------- blocked spy '+addr);
+			console.log('------------------- blocked spy '+addr,true);
 		} else {
 			console.log('------------------- Peer found '+addr);
 			engine.emit('peer', addr);
