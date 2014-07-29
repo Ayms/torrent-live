@@ -125,7 +125,7 @@ This will block already known spies and discover new ones while your are downloa
 	
 The IP addresses are stored in the 'spies.txt' file, the format is simply: "IP address1","IP address2",...,"IP addressN", (do not forget the last comma if you create it manually or import it)
 	
-This is still experimental and subject to change, some ideas were inspired from this interesting thread: [P2P-hackers How do BitTorrent block lists get created?](http://lists.zooko.com/pipermail/p2p-hackers/2014-May/003236.html), for now the methodology is the following:
+This is still experimental and subject to evolve, some ideas were inspired from this interesting thread: [P2P-hackers How do BitTorrent block lists get created?](http://lists.zooko.com/pipermail/p2p-hackers/2014-May/003236.html), for now the methodology is the following:
 
 - set a fake infohash close to the real one
 - announce yourself with the fake infohash, respond to queries (freerider option set to false here)
