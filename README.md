@@ -142,6 +142,8 @@ This is still experimental and subject to evolve, some ideas were inspired from 
 
 A side effect is that you might block regular peers that are trying to anonymize themselves via a network like Tor or a VPN (in case the spies are doing the same), but that's not very important and marginal given the size of the bittorrent network. And anyway you don't hurt anybody since you are using your blocklist for your personal use.
 
+In addition, torrent-live will block the peers that seem not to behave normally, like peers not answering to pieces requests or with abnormal delays, or wrongly. Torrent-live might then by mistake block some good peers but, again, this is marginal given the number of peers.
+
 It does not insure 100% that you will not connect to a spy but it does minimize a lot this risk, so what you are doing is difficult to detect.
 
 The spies might change their IP addresses among their service provider pool of addresses, therefore you could keep in the blocklist some addresses that do not correspond any longer to spies, again it does not seem to be a huge issue since torrent-live is updating the list real-time (TODO remove IP addresses not appearing as spies since some time in the blocklist).
