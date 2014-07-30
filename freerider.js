@@ -38,7 +38,7 @@ var bittorrent=require('./index.js'),
 	dht=require('./node_modules/bittorrent-dht/index.js'),
 	blocklist=require('./lib/blocklist.js'),
 	fs=require('fs'),
-	oconsole,
+	oconsole=console.log.bind(console),
 	torrent,
 	ini_dht,
 	spiesfile,
@@ -78,15 +78,16 @@ node freerider.js [magnet] findspiesonly
 node freerider.js [magnet] [path] findspiesonly
 */
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException',function (err) {
 	oconsole(err.stack);
 	try {
 		var fd=fs.openSync('/torrent.txt','a');
 		fs.writeSync(fd,(new Date().toDateString())+' '+(new Date().toTimeString()));
-		fs.writeSync(fd,err.stack+'\n');	
+		fs.writeSync(fd,err.stack);
 		fs.closeSync(fd);
 	} catch(ee) {}
 });
+
 
 if (process.argv) {
 	if (process.argv.length>1) {
@@ -137,7 +138,6 @@ infohash=magnet.split(':btih:')[1];
 spiesfile='spies-'+infohash+'.txt';
 
 fs.open('log-'+infohash+'.txt','w',function(err,fd) {
-	oconsole=console.log.bind(console);
 	console.log=function(txt,user) {
 		if (user) {
 			oconsole(txt);
@@ -307,7 +307,7 @@ var start=function() {
 };
 
 var merge=function(filename) {
-	console.log('mergin spies');
+	console.log('merging spies');
 	var tmp='';
 	var sp='';
 	var files=fs.readdirSync('.');
