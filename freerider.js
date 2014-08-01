@@ -140,7 +140,9 @@ spiesfile='spies-'+infohash+'.txt';
 fs.open('log-'+infohash+'.txt','w',function(err,fd) {
 	console.log=function(txt,user) {
 		if (user) {
-			oconsole(txt);
+			try {
+				oconsole(txt);
+			} catch (ee) {}
 		};
 		txt +=' '+(new Date().toDateString())+' '+(new Date().toTimeString());
 		fs.write(fd,txt+'\n',function() {});
@@ -151,7 +153,9 @@ var writefile=function(file,txt) {
 	fs.open(file,'a',function(err,fd) {
 		if (!err) {
 			fs.write(fd,txt,function(){});
+			fs.close(fd);
 		} else {
+			console.log('error writefile '+file,true);
 			setTimeout(function() {writefile(file,txt)},1000);
 		};
 	});
@@ -313,6 +317,7 @@ var merge=function(filename) {
 	var files=fs.readdirSync('.');
 	files.forEach(function(file) {
 		if (file.indexOf('spies-')!==-1) {
+			console.log('adding '+file);
 			tmp +=fs.readFileSync(file);
 		};
 		if (file===filename) {
@@ -328,14 +333,27 @@ var merge=function(filename) {
 	return sp;
 };
 
+//http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
+var unique=function() {
+    var o={};
+	var l=this.length;
+	var r=[];
+    for(var i=0;i<l;i++) {
+		o[this[i]]=this[i];
+	};
+    for(var i in o) {
+		r.push(o[i]);
+	};
+    return r;
+};
+
 var update_spies=function(spies) {
-	var clean=[];
-	Arrayblocklist=JSON.parse('['+spies.slice(0,spies.length-1).toString('utf8')+']');
-	console.log('Number of known spies before cleaning: '+Arrayblocklist.length);
-	Arrayblocklist.forEach(function(val) {if (clean.indexOf(val)===-1) {clean.push(val)}});
-	Arrayblocklist=clean;
-	clean=JSON.stringify(clean);
-	fs.writeFileSync('./spies.txt',clean.substr(1,clean.length-2)+',');
+	var tmp=JSON.parse('['+spies.slice(0,spies.length-1).toString('utf8')+']');
+	console.log('Number of known spies before cleaning: '+tmp.length);
+	Arrayblocklist=unique.call(tmp);
+	tmp=JSON.stringify(Arrayblocklist);
+	console.log('end cleaning');
+	fs.writeFileSync('./spies.txt',tmp.substr(1,tmp.length-2)+',');
 	blocked=blocklist(Arrayblocklist);
 	console.log('Number of known spies after cleaning: '+Arrayblocklist.length);
 };

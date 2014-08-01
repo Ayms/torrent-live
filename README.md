@@ -146,6 +146,8 @@ In addition, torrent-live will block the peers that seem not to behave normally,
 
 It does not insure 100% that you will not connect to a spy but it does minimize a lot this risk, so what you are doing is difficult to detect.
 
+![blocked](https://raw.github.com/Ayms/torrent-live/master/blocked.png)
+
 The spies might change their IP addresses among their service provider pool of addresses, therefore you could keep in the blocklist some addresses that do not correspond any longer to spies, again it does not seem to be a huge issue since torrent-live is updating the list real-time (TODO remove IP addresses not appearing as spies since some time in the blocklist).
 
 Apparently, for a new infohash the spies are slow to arrive at the begining, but arrive massively after some time.
