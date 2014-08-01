@@ -318,33 +318,31 @@ var merge=function(filename) {
 	files.forEach(function(file) {
 		if (file.indexOf('spies-')!==-1) {
 			console.log('adding '+file);
-			tmp +=fs.readFileSync(file);
+			tmp +=fs.readFileSync(file).toString('utf8');
 		};
 		if (file===filename) {
 			fs.unlink(file);
 		};
 	});
 	if (tmp.length) {
-		try {
-			sp=fs.readFileSync('spies.txt');
-			sp +=tmp;
-		} catch(ee) {};
+		sp=fs.readFileSync('spies.txt').toString('utf8');
+		console.log('Number of spies in spies.txt:'+JSON.parse('['+sp.slice(0,sp.length-1).toString('utf8')+']').length);
+		sp +=tmp;
 	};
 	return sp;
 };
 
-//http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
+//modification of http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
 var unique=function() {
-    var o={};
+	var o={};
 	var l=this.length;
 	var r=[];
-    for(var i=0;i<l;i++) {
-		o[this[i]]=this[i];
+	this.forEach(function(val,i) {o[val]=i});
+	for(var i in o) {
+		r.push(i);
 	};
-    for(var i in o) {
-		r.push(o[i]);
-	};
-    return r;
+	o=null;
+	return r;
 };
 
 var update_spies=function(spies) {
