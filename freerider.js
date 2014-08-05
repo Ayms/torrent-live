@@ -1,4 +1,4 @@
-/*Copyright (C) 2014 Aymeric Vitte
+/*Copyright (C) 2014 Naïs - Aymeric Vitte
 
 	With modifications of https://github.com/mafintosh/torrent-stream:
 	
