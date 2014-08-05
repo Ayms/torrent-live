@@ -324,8 +324,13 @@ var merge=function(filename) {
 			fs.unlink(file);
 		};
 	});
-	sp=fs.readFileSync('spies.txt').toString('utf8');
-	console.log('Number of spies in spies.txt:'+JSON.parse('['+sp.slice(0,sp.length-1).toString('utf8')+']').length);
+	try {
+		sp=fs.readFileSync('spies.txt').toString('utf8');
+		console.log('Number of spies in spies.txt:'+JSON.parse('['+sp.slice(0,sp.length-1).toString('utf8')+']').length);
+	} catch(ee) {
+		console.log('Number of spies in spies.txt:0'
+	};
+	sp +=tmp;
 	return sp;
 };
 
