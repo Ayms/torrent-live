@@ -175,3 +175,16 @@ Do not use trackers sites and do not follow their wrong and insecure recommendat
 Using the DHT, there are no requirements that you must share what you download, which as a freerider you are not doing, and ratio enforcement stories.
 
 If for a given infohash the download does not start, then it probably means that nobody is serving this file, or that there is a bug somewhere, please advise if you are suspecting the later.
+
+## Related projects :
+
+* [Ayms/torrent-live](https://github.com/Ayms/torrent-live)
+* [Ayms/node-Tor](https://github.com/Ayms/node-Tor)
+* [Ayms/node-Tor](https://github.com/Ayms/iAnonym)
+* [Interception Detector](http://www.ianonym.com/intercept.html)
+* [Ayms/abstract-tls](https://github.com/Ayms/abstract-tls)
+* [Ayms/websocket](https://github.com/Ayms/websocket)
+* [Ayms/node-typedarray](https://github.com/Ayms/node-typedarray)
+* [Ayms/node-dom](https://github.com/Ayms/node-dom)
+* [Ayms/node-bot](https://github.com/Ayms/node-bot)
+* [Ayms/node-gadgets](https://github.com/Ayms/node-gadgets)
