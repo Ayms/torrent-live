@@ -178,9 +178,8 @@ If for a given infohash the download does not start, then it probably means that
 
 ## Related projects :
 
-* [Ayms/torrent-live](https://github.com/Ayms/torrent-live)
 * [Ayms/node-Tor](https://github.com/Ayms/node-Tor)
-* [Ayms/node-Tor](https://github.com/Ayms/iAnonym)
+* [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
 * [Interception Detector](http://www.ianonym.com/intercept.html)
 * [Ayms/abstract-tls](https://github.com/Ayms/abstract-tls)
 * [Ayms/websocket](https://github.com/Ayms/websocket)
