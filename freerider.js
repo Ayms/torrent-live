@@ -38,10 +38,12 @@ var bittorrent=require('./index.js'),
 	dht=require('./node_modules/bittorrent-dht/index.js'),
 	blocklist=require('./lib/blocklist.js'),
 	fs=require('fs'),
+	http=require('http'),
 	oconsole=console.log.bind(console),
 	torrent,
 	ini_dht,
 	spiesfile,
+	geoipfile,
 	Arrayblocklist=[],
 	blocked,
 	knownspies=[],
@@ -61,8 +63,14 @@ var bittorrent=require('./index.js'),
 	infohash,
 	fakeinfohash,
 	NB_FILES,
-	T0;
+	T0,
+	myip='0.0.0.0',
+	geoip;
 
+try {
+	geoip=require('./geoip.js').geoip;
+} catch(ee) {};
+	
 /*
 Use:
 node freerider.js [infohash]
@@ -136,6 +144,8 @@ console.log(path+' '+magnet);
 infohash=magnet.split(':btih:')[1];
 
 spiesfile='spies-'+infohash+'.txt';
+
+geoipfile='geoip-'+infohash+'.csv';
 
 fs.open('log-'+infohash+'.txt','w',function(err,fd) {
 	console.log=function(txt,user) {
@@ -246,6 +256,9 @@ var onpeer=function(addr) {
 		blocked.add(ip);
 		Arrayblocklist.push(ip);
 		writefile(spiesfile,'"'+ip+'",');
+		if (geoip) {
+			geoip(geoipfile,[ip]);
+		};
 		if (torrent) {
 			torrent.blocked=blocked;
 		};
@@ -253,7 +266,7 @@ var onpeer=function(addr) {
 		if (knownspies.indexOf(ip)===-1) {
 			knownspies.push(ip);
 		};
-		console.log('already known spy - total of known spies encountered :'+knownspies.length+' of '+Arrayblocklist.length,true);
+		console.log('already known spy '+ip+' - total of known spies encountered :'+knownspies.length+' of '+Arrayblocklist.length,true);
 	};
 };
 
@@ -280,7 +293,7 @@ var createDHT=function(infoHash,opts) {
 		if (table!==ini_dht) {
 			table.destroy();
 		};
-		createDHT(infoHash,{debug:false,freerider:false,debug:true});
+		createDHT(infoHash,opts);
 	});
 };
 
@@ -293,6 +306,7 @@ var start_torrent=function(blocklist) {
 };
 
 var start=function() {
+	console.log('myip: '+myip,true);
 	if (findspies) {
 		var last=infohash.slice(infohash.length-1);
 		myPort=parseInt(Math.random()*10000+35000);
@@ -301,22 +315,25 @@ var start=function() {
 		var fake='magnet:?xt=urn:btih:'+infohash.substr(0,infohash.length-1)+last;
 		fakeinfohash=fake.split(':btih:')[1];
 		console.log('fake infohash '+fake,true);
-		createDHT(fakeinfohash,{debug:false,freerider:false});
+		createDHT(fakeinfohash,{debug:false,freerider:false,blocklist:blocked,knownspies:knownspies,myip:myip});
 		if (!findspiesonly) {
 			setTimeout(function() {start_torrent(Arrayblocklist)},START);
+		} else {
+			setInterval(function() {console.log('Known spies encountered '+knownspies.length+' of '+Arrayblocklist.length,true)},60*1000)
 		};
 	} else {
 		start_torrent(Arrayblocklist);
 	};
 };
 
-var merge=function(filename) {
-	console.log('merging spies');
+var merge=function(filename,gfile) {
+	var name=gfile.split('.')[0];
+	console.log('merging '+name);
 	var tmp='';
 	var sp='';
 	var files=fs.readdirSync('.');
 	files.forEach(function(file) {
-		if (file.indexOf('spies-')!==-1) {
+		if (file.indexOf(name+'-')!==-1) {
 			console.log('adding '+file);
 			tmp +=fs.readFileSync(file).toString('utf8');
 		};
@@ -325,10 +342,14 @@ var merge=function(filename) {
 		};
 	});
 	try {
-		sp=fs.readFileSync('spies.txt').toString('utf8');
-		console.log('Number of spies in spies.txt:'+JSON.parse('['+sp.slice(0,sp.length-1).toString('utf8')+']').length);
+		sp=fs.readFileSync(gfile).toString('utf8');
+		if (name==='spies') {
+			console.log('Number of spies in '+gfile+' '+JSON.parse('['+sp.slice(0,sp.length-1).toString('utf8')+']').length);
+		} else {
+			console.log('Number of spies in '+gfile+' '+(sp.split('\n')).length);
+		};
 	} catch(ee) {
-		console.log('Number of spies in spies.txt:0');
+		console.log('Number of spies in '+gfile+': 0');
 	};
 	sp +=tmp;
 	return sp;
@@ -347,7 +368,7 @@ var unique=function() {
 	return r;
 };
 
-var update_spies=function(spies) {
+var update_spies=function(spies,geoips) {
 	var tmp=JSON.parse('['+spies.slice(0,spies.length-1).toString('utf8')+']');
 	console.log('Number of known spies before cleaning: '+tmp.length);
 	Arrayblocklist=unique.call(tmp);
@@ -355,17 +376,64 @@ var update_spies=function(spies) {
 	console.log('end cleaning');
 	fs.writeFileSync('./spies.txt',tmp.substr(1,tmp.length-2)+',');
 	blocked=blocklist(Arrayblocklist);
-	console.log('Number of known spies after cleaning: '+Arrayblocklist.length);
+	console.log('Number of known spies after cleaning (spies.txt): '+Arrayblocklist.length);
+	if (geoips) {
+		var tmp=geoips.split('\n');
+		tmp=unique.call(tmp);
+		console.log('Number of known spies after cleaning (geoip.csv): '+tmp.length);
+		fs.writeFileSync('./geoip.csv',tmp.join('\n'));
+	};
 };
 
-var spies=merge(spiesfile);
+var spies=merge(spiesfile,'spies.txt');
+
+var geoips=merge(geoipfile,'geoip.csv');
 
 if (spies) {
-	update_spies(spies);
+	update_spies(spies,geoips);
 } else {
 	blocked=blocklist([]);
 };
 
 START=Arrayblocklist.length?(30*1000):(5*60*1000);
 
-start();
+var options = {
+	host: 'www.monip.org',
+	path: '/',
+	port: 80,
+	method: 'GET'
+};
+
+var req=http.request(options,function(res) {
+	var data_='';
+	res.on('data', function(d) {
+		data_ +=d.toString('utf8');
+	});
+	res.on('end',function() {
+		if (data_) {
+			try {
+				var res=data_.split("<BR>");
+				if (res.length) {
+					res=res[1];
+					res=res.split("<br>");
+					if (res.length) {
+						res=res[0].split(':');
+						if (res.length>1) {
+							myip=res[1].trim();
+						};
+					};
+				};
+			} catch(ee) {};
+		};
+		start();
+	});
+	res.on('error',function() {
+		start();
+	});
+});
+
+req.on('error', function(e) {
+	start();
+});
+
+req.end();
