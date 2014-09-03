@@ -48,7 +48,6 @@ var bittorrent=require('./index.js'),
 	blocked,
 	knownspies=[],
 	closest,
-	spies,
 	magnet,
 	path,
 	findspies,
@@ -65,7 +64,8 @@ var bittorrent=require('./index.js'),
 	NB_FILES,
 	T0,
 	myip='0.0.0.0',
-	geoip;
+	geoip,
+	streamspies;
 
 try {
 	geoip=require('./geoip.js').geoip;
@@ -147,7 +147,9 @@ spiesfile='spies-'+infohash+'.txt';
 
 geoipfile='geoip-'+infohash+'.csv';
 
-fs.open('log-'+infohash+'.txt','w',function(err,fd) {
+var streamlog=fs.createWriteStream('log-'+infohash+'.txt');
+
+streamlog.on('open',function() {
 	console.log=function(txt,user) {
 		if (user) {
 			try {
@@ -155,21 +157,10 @@ fs.open('log-'+infohash+'.txt','w',function(err,fd) {
 			} catch (ee) {}
 		};
 		txt +=' '+(new Date().toDateString())+' '+(new Date().toTimeString());
-		fs.write(fd,txt+'\n',function() {});
+		streamlog.write(txt+'\n');
 	};
+	init();
 });
-
-var writefile=function(file,txt) {
-	fs.open(file,'a',function(err,fd) {
-		if (!err) {
-			fs.write(fd,txt,function(){});
-			fs.close(fd);
-		} else {
-			console.log('error writefile '+file,true);
-			setTimeout(function() {writefile(file,txt)},1000);
-		};
-	});
-};
 
 var onsettorrent=function() {
 	if (findspies) {
@@ -255,7 +246,7 @@ var onpeer=function(addr) {
 		nbspy++;
 		blocked.add(ip);
 		Arrayblocklist.push(ip);
-		writefile(spiesfile,'"'+ip+'",');
+		streamspies.write('"'+ip+'",');
 		if (geoip) {
 			geoip(geoipfile,[ip]);
 		};
@@ -347,6 +338,7 @@ var merge=function(filename,gfile) {
 			console.log('Number of spies in '+gfile+' '+JSON.parse('['+sp.slice(0,sp.length-1).toString('utf8')+']').length);
 		} else {
 			console.log('Number of spies in '+gfile+' '+(sp.split('\n')).length);
+			tmp='\n'+tmp;
 		};
 	} catch(ee) {
 		console.log('Number of spies in '+gfile+': 0');
@@ -370,70 +362,78 @@ var unique=function() {
 
 var update_spies=function(spies,geoips) {
 	var tmp=JSON.parse('['+spies.slice(0,spies.length-1).toString('utf8')+']');
-	console.log('Number of known spies before cleaning: '+tmp.length);
+	console.log('Number of known spies before cleaning: '+tmp.length,true);
 	Arrayblocklist=unique.call(tmp);
 	tmp=JSON.stringify(Arrayblocklist);
-	console.log('end cleaning');
+	console.log('end cleaning',true);
 	fs.writeFileSync('./spies.txt',tmp.substr(1,tmp.length-2)+',');
 	blocked=blocklist(Arrayblocklist);
-	console.log('Number of known spies after cleaning (spies.txt): '+Arrayblocklist.length);
+	console.log('Number of known spies after cleaning (spies.txt): '+Arrayblocklist.length,true);
 	if (geoips) {
 		var tmp=geoips.split('\n');
 		tmp=unique.call(tmp);
-		console.log('Number of known spies after cleaning (geoip.csv): '+tmp.length);
+		console.log('Number of known spies after cleaning (geoip.csv): '+tmp.length,true);
 		fs.writeFileSync('./geoip.csv',tmp.join('\n'));
 	};
 };
 
-var spies=merge(spiesfile,'spies.txt');
+var init=function() {
 
-var geoips=merge(geoipfile,'geoip.csv');
+	var spies=merge(spiesfile,'spies.txt');
 
-if (spies) {
-	update_spies(spies,geoips);
-} else {
-	blocked=blocklist([]);
-};
+	var geoips=merge(geoipfile,'geoip.csv');
+	
+	streamspies=fs.createWriteStream(spiesfile);
+	
+	streamspies.on('open',function() {
 
-START=Arrayblocklist.length?(30*1000):(5*60*1000);
-
-var options = {
-	host: 'www.monip.org',
-	path: '/',
-	port: 80,
-	method: 'GET'
-};
-
-var req=http.request(options,function(res) {
-	var data_='';
-	res.on('data', function(d) {
-		data_ +=d.toString('utf8');
-	});
-	res.on('end',function() {
-		if (data_) {
-			try {
-				var res=data_.split("<BR>");
-				if (res.length) {
-					res=res[1];
-					res=res.split("<br>");
-					if (res.length) {
-						res=res[0].split(':');
-						if (res.length>1) {
-							myip=res[1].trim();
-						};
-					};
-				};
-			} catch(ee) {};
+		if (spies) {
+			update_spies(spies,geoips);
+		} else {
+			blocked=blocklist([]);
 		};
-		start();
-	});
-	res.on('error',function() {
-		start();
-	});
-});
 
-req.on('error', function(e) {
-	start();
-});
+		START=Arrayblocklist.length?(30*1000):(5*60*1000);
 
-req.end();
+		var options = {
+			host: 'www.monip.org',
+			path: '/',
+			port: 80,
+			method: 'GET'
+		};
+
+		var req=http.request(options,function(res) {
+			var data_='';
+			res.on('data', function(d) {
+				data_ +=d.toString('utf8');
+			});
+			res.on('end',function() {
+				if (data_) {
+					try {
+						var res=data_.split("<BR>");
+						if (res.length) {
+							res=res[1];
+							res=res.split("<br>");
+							if (res.length) {
+								res=res[0].split(':');
+								if (res.length>1) {
+									myip=res[1].trim();
+								};
+							};
+						};
+					} catch(ee) {};
+				};
+				start();
+			});
+			res.on('error',function() {
+				start();
+			});
+		});
+
+		req.on('error', function(e) {
+			start();
+		});
+
+		req.end();
+	});
+};
