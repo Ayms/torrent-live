@@ -1,9 +1,9 @@
 torrent-live
 ===
 
-Download and stream live (while the download is in progress) torrents with your browser, send it to your TV, as a total freerider minimize what you are unvealing to the outside regarding your activities, real-time, easy to install, easy to use.
+Download and stream live (while the download is in progress) torrents with your browser, send it to your TV, as a total freerider do not say to everybody what you are really looking for and minimize your visibility, real-time, easy to install, easy to use.
 
-Avoid spies and people that are tracking you with the 'findspies' option.
+Avoid spies and people that are tracking you with the 'findspies' option, create your own blocklist.
 
 ## Presentation
 
@@ -104,6 +104,12 @@ Data are not retrieved sequentially but are stored sequentially, you can stop/re
 If for any reasons the player stops inside the browser (or bug) then refresh the page and restart the video where it stopped.
 
 If you want more advanced security/anonymity features you can checkout [Peersm](http://www.peersm.com) and [try it](http://peersm.com/peersm), see [node-Tor](https://github.com/Ayms/node-Tor) for the technical details.
+
+## Do not say to the "world" what you are really looking for
+
+torrent-live does change the real infohash for another one close to it, then retrieves the peers that are closest to it, eliminates the spies and finally requests the real infohash to them, then connects to the non spies (limited to 20) among the returned peers.
+
+This does prevent to say to everybody what you are really looking for, spies are eliminated not only during the final phase but all along the process of discovering the peers that have the requested content.
 
 ## No Freerider
 
