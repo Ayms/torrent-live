@@ -96,10 +96,10 @@ process.on('uncaughtException',function (err) {
 	} catch(ee) {}
 });
 
-
 if (process.argv) {
 	if (process.argv.length>1) {
 		var args=process.argv.splice(2);
+		console.log(args);
 		if (args.length) {
 			if (args.length>1) {
 				magnet=args[0];
@@ -141,7 +141,7 @@ if (magnet.length>60) {
 
 console.log(path+' '+magnet);
 
-infohash=magnet.split(':btih:')[1];
+infohash=magnet.split(':btih:')[1].toLowerCase();
 
 spiesfile='spies-'+infohash+'.txt';
 
@@ -261,7 +261,7 @@ var onpeer=function(addr) {
 	};
 };
 
-var createDHT=function(infoHash,opts) {
+var createDHT=function(infoHash,opts,bool) {
 	var table=dht(opts);
 	var nodeId=table.nodeId.toString('hex');
 	table.on('peer',onpeer);
@@ -270,21 +270,35 @@ var createDHT=function(infoHash,opts) {
 		table.lookup(infoHash);
 	});
 	table.on('closest',function() {
-		console.log('announcing',true);
+		//console.log('announcing '+infoHash+' from my nodeId '+nodeId,true);
 		closest=table.closest_from_infohash;
-		if ((closest.length)&&(!ini_dht)) {
+		if ((closest.length)&&(!ini_dht)&&(!bool)) {
 			ini_dht=table;
 		};
 		closest.forEach(function (contact) {
-			var addr=contact.addr;
-			var addrData=table._getAddrData(addr);
-			var token=table._generateToken(addrData[0]);
-			table._sendAnnouncePeer(addr,fakeinfohash,myPort,token,function(err,res) {});
+			if (findspies&&bool) { //just announce for the listener
+				var announce=function(err,res) {
+					if (res) {
+						console.log('announcing '+infoHash+' from my nodeId '+nodeId+' to closest: '+contact.addr+' nodeId '+ contact.id.toString('hex')+' token '+(res.token?((new Buffer(res.token,'binary')).toString('hex')):''),true);
+						if (res.token) {
+							table._sendAnnouncePeer(contact.addr,infoHash,myPort,res.token,function(err,res) {});
+						};
+					};
+				};
+				table._sendGetPeers(contact.addr,infoHash,announce);
+			};
 		});
-		if (table!==ini_dht) {
-			table.destroy();
+		if (!bool) {
+			if (table!==ini_dht) {
+				table.destroy();
+			};
+			delete opts.nodeId;
+			createDHT(infoHash,opts);
+		} else {
+			if (!findspies) {
+				start_torrent(Arrayblocklist);
+			};
 		};
-		createDHT(infoHash,opts);
 	});
 };
 
@@ -298,22 +312,30 @@ var start_torrent=function(blocklist) {
 
 var start=function() {
 	console.log('myip: '+myip,true);
+	console.log('true infohash '+infohash,true);
+	var last=infohash.slice(infohash.length-1);
+	myPort=parseInt(Math.random()*10000+35000);
+	var last2=parseInt(last,16)^8;
+	last2=last2.toString(16);
+	var fakeinfohash2=infohash.substr(0,infohash.length-1)+last2;
+	last=parseInt(last,16)^1;
+	last=last.toString(16);
+	var fake='magnet:?xt=urn:btih:'+infohash.substr(0,infohash.length-1)+last;
+	fakeinfohash=fake.split(':btih:')[1];
+	console.log('fake infohash '+fakeinfohash,true);
 	if (findspies) {
-		var last=infohash.slice(infohash.length-1);
-		myPort=parseInt(Math.random()*10000+35000);
-		last=parseInt(last,16)^1;
-		last=last.toString(16);
-		var fake='magnet:?xt=urn:btih:'+infohash.substr(0,infohash.length-1)+last;
-		fakeinfohash=fake.split(':btih:')[1];
-		console.log('fake infohash '+fake,true);
 		createDHT(fakeinfohash,{debug:false,freerider:false,blocklist:blocked,knownspies:knownspies,myip:myip});
-		if (!findspiesonly) {
-			setTimeout(function() {start_torrent(Arrayblocklist)},START);
-		} else {
+		if (findspiesonly) {
+			/* uncomment if you want to announce in the DHT (not recommended or every torrent-live users will blacklist each other, for testing purposes only)
+			console.log('fake infohash2 (my nodeId announcing fake infohash) '+fakeinfohash2,true);
+			createDHT(fakeinfohash,{debug:false,freerider:false,blocklist:blocked,knownspies:knownspies,myip:myip,nodeId:fakeinfohash2},true);
+			*/
 			setInterval(function() {console.log('Known spies encountered '+knownspies.length+' of '+Arrayblocklist.length,true)},60*1000)
-		};
+		} else {
+			setTimeout(function() {start_torrent(Arrayblocklist)},START);
+		}
 	} else {
-		start_torrent(Arrayblocklist);
+		createDHT(fakeinfohash,{debug:false,freerider:false,blocklist:blocked,knownspies:knownspies,myip:myip},true);
 	};
 };
 
@@ -325,7 +347,7 @@ var merge=function(filename,gfile) {
 	var files=fs.readdirSync('.');
 	files.forEach(function(file) {
 		if (file.indexOf(name+'-')!==-1) {
-			console.log('adding '+file);
+			console.log('adding '+file,true);
 			tmp +=fs.readFileSync(file).toString('utf8');
 		};
 		if (file===filename) {
@@ -362,8 +384,9 @@ var unique=function() {
 
 var update_spies=function(spies,geoips) {
 	var tmp=JSON.parse('['+spies.slice(0,spies.length-1).toString('utf8')+']');
-	console.log('Number of known spies before cleaning: '+tmp.length,true);
+	console.log('Number of known spies before cleaning (all merged): '+tmp.length,true);
 	Arrayblocklist=unique.call(tmp);
+	console.log('Arrayblocklist',true);
 	tmp=JSON.stringify(Arrayblocklist);
 	console.log('end cleaning',true);
 	fs.writeFileSync('./spies.txt',tmp.substr(1,tmp.length-2)+',');
