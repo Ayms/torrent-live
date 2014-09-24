@@ -131,11 +131,10 @@ This will block already known spies and discover new ones while your are downloa
 	
 The IP addresses are stored in the 'spies.txt' file, the format is simply: "IP address1","IP address2",...,"IP addressN", (do not forget the last comma if you create it manually or import it)
 	
-This is still experimental and subject to evolve, some ideas were inspired from this interesting thread: [P2P-hackers How do BitTorrent block lists get created?](http://lists.zooko.com/pipermail/p2p-hackers/2014-May/003236.html), for now the methodology is the following:
+The methodology is the following:
 
 - set a fake infohash close to the real one
-- announce yourself with the fake infohash, respond to queries (freerider option set to false here)
-- walk the DHT periodically looking for the fake infohash
+- walk the DHT periodically looking for the fake infohash, respond to queries (freerider option set to false here)
 - change your nodeID at each new walk with a random one, so you change your path in the DHT
 - register the spies found in a blocklist, register them in a file, no difference is made for Tor exit nodes or VPNs, they will be blocked too 
 - start the real torrent after 30s if a blocklist exists (average time to get the closest nodes) or 5mn, use the closest nodes (not in the blocklist) found for the fake infohash to retrieve the peers for the real one, this prevents you from walking the DHT again saying to everybody what you are really looking for.
@@ -144,9 +143,16 @@ This is still experimental and subject to evolve, some ideas were inspired from 
 - freerider option to true: do not advertise yourself, do not answer to queries. Due to this some peers might disconnect but the main seeders usually don't, so the swarm will oscillate around 20 peers and stabilize after some time with supposedly good seeders (ie not spies)
 - the periodical check of the DHT still runs while the torrent is downloaded/streamed to remove real-time the new spies found and increment the blocklist
 
-<b>This does ensure that without any doubts the spies found are real spies.</b> Because they did announce themselves for a torrent that does not exist or that you are the only one to have (remember, torrent-live is not using trackers, only the DHT, so the only means for the spies to watch you is to detect what you are asking for when you walk the DHT to find the closest nodes and to register as having it, then wait for you to connect to them).
+In this process the "spies" are the peers that are pretending having the fake infohash and those that are sending them, their goal being that you connect to them to detect what you are doing.
 
-A side effect is that you might block regular peers that are trying to anonymize themselves via a network like Tor or a VPN (in case the spies are doing the same), but that's not very important and marginal given the size of the bittorrent network. And anyway you don't hurt anybody since you are using your blocklist for your personal use.
+They are necessarily spies because:
+
+- they know how to send some information about something that does not exist
+- the spies do not announce themselves in the DHT with the fake infohash, probably because they would be easier to detect, so a non spy can not advertise a spy
+
+So the conclusion is that the one answering to a getpeer request with some peers is a spy, and some of the peers returned are spies too, but not necessarily all since it appears obvious that some spies are returning non spies in order to make more difficult their detection, so torrent-live might block non spies (TBD: how to avoid this)
+
+Another side effect is that you might block regular peers that are trying to anonymize themselves via a network like Tor or a VPN (in case the spies are doing the same), but that's not very important and marginal given the size of the bittorrent network. And anyway you don't hurt anybody since you are using your blocklist for your personal use.
 
 In addition, torrent-live will block the peers that seem not to behave normally, like peers not answering to pieces requests or with abnormal delays, or wrongly. Torrent-live might then by mistake block some good peers but, again, this is marginal given the number of peers.
 
