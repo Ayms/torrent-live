@@ -31,6 +31,16 @@ If you need to convert some files, please see the 'File conversion' section belo
 
 Install nodejs v0.11.9 for your platform (http://nodejs.org/dist/v0.11.9/) or the official nodejs release (http://nodejs.org/download/)
 
+To install torrent-live:
+
+	npm install torrent-live -g
+
+Or
+
+Download http://www.peersm.com/torrent-live.zip
+	
+	Create for example a 'torrent' directory and unzip torrent-live.zip
+
 For those who are not familiar with nodejs, on windows for example:
 
 	With your browser download:
@@ -42,12 +52,6 @@ http://nodejs.org/dist/v0.11.9/node-v0.11.9-x86.msi
 http://nodejs.org/dist/v0.11.9/x64/node-v0.11.9-x64.msi
 
 Then execute the files, this will install node.
-
-To install torrent-live:
-
-Download http://www.peersm.com/torrent-live.zip
-	
-	Create for example a 'torrent' directory and unzip torrent-live.zip
 	
 To use it:
 
