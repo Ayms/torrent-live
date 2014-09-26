@@ -1,0 +1,33 @@
+{
+  "name": "torrent-live",
+  "description": "Making torrents more private and live streaming inside browsers",
+  "version": "0.1.0",
+  "author": {
+    "name": "Aymeric Vitte",
+    "email": "contact@peersm.com",
+    "url": "http://www.peersm.com"
+  },
+  "homepage": "http://torrent-live.org",
+  "keywords": [
+    "torrent",
+    "bittorrent",
+    "dht",
+    "distributed hash table",
+    "protocol",
+    "peer",
+    "p2p",
+    "peer-to-peer",
+	"privacy",
+	"anonymity",
+	"streaming",
+	"freerider",
+	"spies",
+	"TV"
+  ],
+  "license": "MIT",
+  "main": "freerider.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Ayms/torrent-live.git"
+  }
+}
