@@ -1,4 +1,4 @@
-torrent-live
+torrent-live - making torrents more private and live streaming inside browsers
 ===
 
 Download and stream live (while the download is in progress) torrents with your browser, send it to your TV, as a total freerider do not say to everybody what you are really looking for and minimize your visibility, real-time, easy to install, easy to use.
@@ -150,7 +150,11 @@ They are necessarily spies because:
 - they know how to send some information about something that does not exist
 - the spies do not announce themselves in the DHT with the fake infohash, probably because they would be easier to detect, so a non spy can not advertise a spy
 
-So the conclusion is that the one answering to a getpeer request with some peers is a spy, and some of the peers returned are spies too, but not necessarily all since it appears obvious that some spies are returning non spies in order to make more difficult their detection, so torrent-live might block non spies (TBD: how to avoid this)
+So the conclusion is that the one answering to a get_peers request with some peers is a spy (called level 1 spy), and some of the peers returned are spies too (called level 2 spies) colluding with level 1 spies and waiting for you to connect to monitor what infohash you are requesting.
+
+The experiment shows that level 1 spies can return non spies too, with real IPs but fake port numbers, probably to make their detection less easy, so torrent-live registers only those it can connect to as level 2 spies.
+
+It can then happen that a non spy is registered as a spy but it seems unlikely, complete report to come soon. 
 
 Another side effect is that you might block regular peers that are trying to anonymize themselves via a network like Tor or a VPN (in case the spies are doing the same), but that's not very important and marginal given the size of the bittorrent network. And anyway you don't hurt anybody since you are using your blocklist for your personal use.
 
