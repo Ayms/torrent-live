@@ -36,12 +36,15 @@
 
 var bittorrent=require('./index.js'),
 	dht=require('./node_modules/bittorrent-dht/index.js'),
+	pws=require('./node_modules/peer-wire-swarm/index.js'),
 	blocklist=require('./lib/blocklist.js'),
+	hat=require('./node_modules/hat/index.js'),
 	fs=require('fs'),
 	http=require('http'),
 	oconsole=console.log.bind(console),
 	torrent,
 	ini_dht,
+	swarm,
 	spiesfile,
 	geoipfile,
 	Arrayblocklist=[],
@@ -52,6 +55,7 @@ var bittorrent=require('./index.js'),
 	path,
 	findspies,
 	findspiesonly,
+	testspies,
 	MB=1048576,
 	SPEED=100000,
 	START,
@@ -108,6 +112,8 @@ if (process.argv) {
 				} else if (args[1]==='findspiesonly') {
 					findspiesonly=true;
 					findspies=true;
+				} else if (args[1]==='testspies') {
+					testspies=true;
 				} else {
 					path=args[1];
 				};
@@ -159,7 +165,11 @@ streamlog.on('open',function() {
 		txt +=' '+(new Date().toDateString())+' '+(new Date().toTimeString());
 		streamlog.write(txt+'\n');
 	};
-	init();
+	if (!testspies) {
+		init();
+	} else {
+		spiestest();
+	};
 });
 
 var onsettorrent=function() {
@@ -239,25 +249,43 @@ var onready=function() {
 	});
 };
 
-var onpeer=function(addr) {
+var addspy=function(addr) {
 	var ip=addr.split(':')[0];
+	nbspy++;
+	blocked.add(ip);
+	Arrayblocklist.push(ip);
+	streamspies.write('"'+ip+'",');
+	if (geoip) {
+		geoip(geoipfile,[ip]);
+	};
+	if (torrent) {
+		torrent.blocked=blocked;
+	};
+};
+
+var increment_knownspies=function(ip) {
+	if (knownspies.indexOf(ip)===-1) {
+		knownspies.push(ip);
+	};
+	console.log('already known spy '+ip+' - total of known spies encountered :'+knownspies.length+' of '+Arrayblocklist.length,true);
+};
+
+var onpeer=function(addr,hash,_addr) {
+	var ip=_addr.split(':')[0];
 	if (!blocked.contains(ip)) {
-		console.log('new spy '+addr,true);
-		nbspy++;
-		blocked.add(ip);
-		Arrayblocklist.push(ip);
-		streamspies.write('"'+ip+'",');
-		if (geoip) {
-			geoip(geoipfile,[ip]);
-		};
-		if (torrent) {
-			torrent.blocked=blocked;
-		};
+		console.log('new spy level 1 '+_addr,true);
+		addspy(_addr);
 	} else {
-		if (knownspies.indexOf(ip)===-1) {
-			knownspies.push(ip);
+		increment_knownspies(ip);
+	};
+	if (swarm) {
+		console.log('testing level 2 spy '+addr+' sent by '+_addr,true);
+		ip=addr.split(':')[0];
+		if (!blocked.contains(ip)) {
+			swarm.add(addr);
+		} else {
+			increment_knownspies(ip)
 		};
-		console.log('already known spy '+ip+' - total of known spies encountered :'+knownspies.length+' of '+Arrayblocklist.length,true);
 	};
 };
 
@@ -302,6 +330,56 @@ var createDHT=function(infoHash,opts,bool) {
 	});
 };
 
+var spiestest=function() {
+	console.log('true infohash '+infohash,true);
+	var last=infohash.slice(infohash.length-1);
+	last=parseInt(last,16)^1;
+	last=last.toString(16);
+	fakeinfohash=infohash.substr(0,infohash.length-1)+last;
+	console.log('fake infohash '+fakeinfohash,true);
+	var sp=fs.readFileSync('receivedfromport.txt').toString('utf8');
+	sp=JSON.parse('['+sp.slice(0,sp.length-1).toString('utf8')+']');
+	var table=dht({debug:false,freerider:false});
+	var swarm=pws(fakeinfohash,'-TS0008-'+hat(48),{size:20,speed:10,freerider:null});
+	swarm.on('wire',function(wire,connection) {
+		console.log('new spy level 2 '+wire.peerAddress,true);
+	});
+	swarm.on('connected',function(wire) {
+		console.log('connected maybe new spy level 2 '+wire.peerAddress,true);
+	});
+	swarm.on('handshake',function(wire) {
+		console.log('handshake maybe new spy level 2 '+wire.peerAddress,true);
+	});
+	swarm.on('error',function(wire) {
+		console.log('error fake spy '+wire.peerAddress,true);
+	});
+	swarm.on('close',function(wire) {
+		console.log('connection close spy '+wire.peerAddress,true);
+	});
+	var nodeId=table.nodeId.toString('hex');
+	var sendgetpeer=function(addr) {
+		table._sendGetPeers(addr,fakeinfohash,function(err,res) {
+			if (res) {
+				console.log('response from '+addr+' '+(res.nodes?'nodes':'values'));
+			} else {
+				console.log('response error from '+addr);
+			}
+		});
+		if (sp.length) {
+			setTimeout(function() {sendgetpeer(sp.shift())},200);
+		};
+	};
+	table.on('peer',function(addr,hash,_addr) {
+		//addr='66.229.115.233:51779';//test peer
+		console.log('testing level 2 spy '+addr+' sent by '+_addr,true);
+		swarm.add(addr);
+	});
+	table.on('ready',function() {
+		console.log('testing level 1 spies',true);
+		sendgetpeer(sp.shift());
+	});
+};
+
 var start_torrent=function(blocklist) {
 	console.log('-------------- start torrent --------------------',true);
 	torrent=bittorrent(magnet,{blocklist:blocklist||null,connections:20,path:path,verify:true,debug:false,freerider:true,dht:ini_dht});
@@ -324,12 +402,26 @@ var start=function() {
 	fakeinfohash=fake.split(':btih:')[1];
 	console.log('fake infohash '+fakeinfohash,true);
 	if (findspies) {
+		swarm=pws(fakeinfohash,'-TS0008-001122334455',{size:20,speed:10,freerider:null});
+		swarm.on('wire',function(wire,connection) {
+			console.log('new spy level 2 '+wire.peerAddress,true);
+		});
+		swarm.on('connected',function(wire) {
+			console.log('connected probably new spy level 2 '+wire.peerAddress,true);
+			addspy(wire.peerAddress);
+		});
+		swarm.on('handshake',function(wire) {
+			console.log('handshake maybe new spy level 2 '+wire.peerAddress,true);
+		});
+		swarm.on('error',function(wire) {
+			console.log('error fake spy '+wire.peerAddress,true);
+		});
+		swarm.on('close',function(wire) {
+			console.log('connection close spy '+wire.peerAddress,true);
+		});
 		createDHT(fakeinfohash,{debug:false,freerider:false,blocklist:blocked,knownspies:knownspies,myip:myip});
 		if (findspiesonly) {
-			/* uncomment if you want to announce in the DHT (not recommended or every torrent-live users will blacklist each other, for testing purposes only)
-			console.log('fake infohash2 (my nodeId announcing fake infohash) '+fakeinfohash2,true);
-			createDHT(fakeinfohash,{debug:false,freerider:false,blocklist:blocked,knownspies:knownspies,myip:myip,nodeId:fakeinfohash2},true);
-			*/
+			//createDHT(fakeinfohash,{debug:false,freerider:false,blocklist:blocked,knownspies:knownspies,myip:myip,nodeId:fakeinfohash2},true);
 			setInterval(function() {console.log('Known spies encountered '+knownspies.length+' of '+Arrayblocklist.length,true)},60*1000)
 		} else {
 			setTimeout(function() {start_torrent(Arrayblocklist)},START);
