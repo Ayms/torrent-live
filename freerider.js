@@ -50,6 +50,7 @@ var bittorrent=require('./index.js'),
 	Arrayblocklist=[],
 	blocked,
 	knownspies=[],
+	tblocked=0,
 	closest,
 	magnet,
 	path,
@@ -103,7 +104,7 @@ process.on('uncaughtException',function (err) {
 if (process.argv) {
 	if (process.argv.length>1) {
 		var args=process.argv.splice(2);
-		console.log(args);
+		//console.log(args);
 		if (args.length) {
 			if (args.length>1) {
 				magnet=args[0];
@@ -174,7 +175,7 @@ streamlog.on('open',function() {
 
 var onsettorrent=function() {
 	if (findspies) {
-		if (ini_dht.closest_from_infohash) {
+		if ((ini_dht)&&(ini_dht.closest_from_infohash)) {
 			console.log('settorrent dht ready',true);
 			ini_dht.removeListener('peer',onpeer);
 			ini_dht.on('peer',function(addr) {torrent.discovery.emit('peer', addr)});
@@ -216,7 +217,7 @@ var onready=function() {
 			time[1]=parseInt(time[1]*60/100);
 			time[1]=(time[1]<10)?('0'+time[1]):time[1];
 			torrent.swarm._queues.forEach(function(val) {nb_peer_left +=val.length});
-			console.log('got for torrent '+name+' size '+(l/MB).toFixed(2)+' MB '+chunk.length+' bytes of data - offset '+stream._piece+' - remaining '+((l-inc)/MB).toFixed(2)+' MB - speed: '+((speed<SPEED)?(parseInt(speed)+' kbps - time left: '+time[0]+'h'+time[1]):'already downloaded')+' - nb peers: '+torrent.swarm.wires.length+' - other peers '+nb_peer_left,true);
+			console.log('got for torrent '+name+' size '+(l/MB).toFixed(2)+' MB '+chunk.length+' bytes of data - offset '+stream._piece+' - remaining '+((l-inc)/MB).toFixed(2)+' MB - speed: '+((speed<SPEED)?(parseInt(speed)+' kbps - time left: '+time[0]+'h'+time[1]):'already downloaded')+' - nb peers: '+torrent.swarm.wires.length+' - other peers '+nb_peer_left+' - blocked spies '+tblocked,true);
 			t0=Date.now();
 			if (l===inc) {
 				console.log('Download finished for '+name,true);
@@ -250,6 +251,7 @@ var onready=function() {
 };
 
 var addspy=function(addr) {
+	console.log('adding new spy '+addr,true);
 	var ip=addr.split(':')[0];
 	nbspy++;
 	blocked.add(ip);
@@ -271,12 +273,14 @@ var increment_knownspies=function(ip) {
 };
 
 var onpeer=function(addr,hash,_addr) {
-	var ip=_addr.split(':')[0];
-	if (!blocked.contains(ip)) {
-		console.log('new spy level 1 '+_addr,true);
-		addspy(_addr);
-	} else {
-		increment_knownspies(ip);
+	if (_addr) {
+		var ip=_addr.split(':')[0];
+		if (!blocked.contains(ip)) {
+			console.log('new spy level 1 '+_addr,true);
+			addspy(_addr);
+		} else {
+			increment_knownspies(ip);
+		};
 	};
 	if (swarm) {
 		console.log('testing level 2 spy '+addr+' sent by '+_addr,true);
@@ -289,16 +293,16 @@ var onpeer=function(addr,hash,_addr) {
 	};
 };
 
-var createDHT=function(infoHash,opts,bool) {
+var createDHT=function(finfohash,opts,bool) {
 	var table=dht(opts);
 	var nodeId=table.nodeId.toString('hex');
 	table.on('peer',onpeer);
 	table.on('ready',function() {
-		console.log('dht ready - starting lookup for infohash '+infoHash+' '+(new Date().toTimeString())+' - new spies found: '+nbspy,true);
-		table.lookup(infoHash);
+		console.log('dht ready - starting lookup for infohash '+finfohash+' - new spies found: '+nbspy+' with nodeId '+nodeId+' '+(new Date().toTimeString()),true);
+		table.lookup(finfohash);
 	});
 	table.on('closest',function() {
-		//console.log('announcing '+infoHash+' from my nodeId '+nodeId,true);
+		//console.log('announcing '+finfohash+' from my nodeId '+nodeId,true);
 		closest=table.closest_from_infohash;
 		if ((closest.length)&&(!ini_dht)&&(!bool)) {
 			ini_dht=table;
@@ -307,13 +311,13 @@ var createDHT=function(infoHash,opts,bool) {
 			if (findspies&&bool) { //just announce for the listener
 				var announce=function(err,res) {
 					if (res) {
-						console.log('announcing '+infoHash+' from my nodeId '+nodeId+' to closest: '+contact.addr+' nodeId '+ contact.id.toString('hex')+' token '+(res.token?((new Buffer(res.token,'binary')).toString('hex')):''),true);
+						console.log('announcing '+finfohash+' from my nodeId '+nodeId+' to closest: '+contact.addr+' nodeId '+ contact.id.toString('hex')+' token '+(res.token?((new Buffer(res.token,'binary')).toString('hex')):''),true);
 						if (res.token) {
-							table._sendAnnouncePeer(contact.addr,infoHash,myPort,res.token,function(err,res) {});
+							table._sendAnnouncePeer(contact.addr,finfohash,myPort,res.token,function(err,res) {});
 						};
 					};
 				};
-				table._sendGetPeers(contact.addr,infoHash,announce);
+				table._sendGetPeers(contact.addr,finfohash,announce);
 			};
 		});
 		if (!bool) {
@@ -321,7 +325,7 @@ var createDHT=function(infoHash,opts,bool) {
 				table.destroy();
 			};
 			delete opts.nodeId;
-			createDHT(infoHash,opts);
+			createDHT(finfohash,opts);
 		} else {
 			if (!findspies) {
 				start_torrent(Arrayblocklist);
@@ -385,7 +389,11 @@ var start_torrent=function(blocklist) {
 	torrent=bittorrent(magnet,{blocklist:blocklist||null,connections:20,path:path,verify:true,debug:false,freerider:true,dht:ini_dht});
 	torrent.on('setTorrent',onsettorrent);
 	torrent.on('ready',onready);
-	torrent.on('blocking',onpeer);
+	torrent.on('blocked-peer',function() {tblocked++});
+	torrent.on('blocking',function(addr) {
+		console.log('torrent blocking peer '+addr,true);
+		onpeer(addr);
+	});
 };
 
 var start=function() {
@@ -407,17 +415,17 @@ var start=function() {
 			console.log('new spy level 2 '+wire.peerAddress,true);
 		});
 		swarm.on('connected',function(wire) {
-			console.log('connected probably new spy level 2 '+wire.peerAddress,true);
+			//console.log('connected probably new spy level 2 '+wire.peerAddress,true);
 			addspy(wire.peerAddress);
 		});
 		swarm.on('handshake',function(wire) {
-			console.log('handshake maybe new spy level 2 '+wire.peerAddress,true);
+			//console.log('handshake maybe new spy level 2 '+wire.peerAddress,true);
 		});
 		swarm.on('error',function(wire) {
-			console.log('error fake spy '+wire.peerAddress,true);
+			//console.log('error fake spy '+wire.peerAddress,true);
 		});
 		swarm.on('close',function(wire) {
-			console.log('connection close spy '+wire.peerAddress,true);
+			//console.log('connection close spy '+wire.peerAddress,true);
 		});
 		createDHT(fakeinfohash,{debug:false,freerider:false,blocklist:blocked,knownspies:knownspies,myip:myip});
 		if (findspiesonly) {

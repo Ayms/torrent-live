@@ -1,7 +1,7 @@
 {
   "name": "torrent-live",
   "description": "Making torrents more private and live streaming inside browsers",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "Aymeric Vitte",
     "email": "contact@peersm.com",
