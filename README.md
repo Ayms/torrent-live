@@ -147,20 +147,9 @@ The methodology is the following:
 - freerider option to true: do not advertise yourself, do not answer to queries. Due to this some peers might disconnect but the main seeders usually don't, so the swarm will oscillate around 20 peers and stabilize after some time with supposedly good seeders (ie not spies)
 - the periodical check of the DHT still runs while the torrent is downloaded/streamed to remove real-time the new spies found and increment the blocklist
 
-In this process the "spies" are the peers that are pretending having the fake infohash and those that are sending them, their goal being that you connect to them to detect what you are doing.
+In this process the "spies" are the peers that are pretending having the fake infohash and those that are sending them, their goal being that you connect to them to detect what you are doing or just to monitor what you are doing.
 
-They are necessarily spies because:
-
-- they know how to send some information about something that does not exist
-- the spies do not announce themselves in the DHT with the fake infohash, probably because they would be easier to detect, so a non spy can not advertise a spy
-
-So the conclusion is that the one answering to a get_peers request with some peers is a spy (called level 1 spy), and some of the peers returned are spies too (called level 2 spies) colluding with level 1 spies and waiting for you to connect to monitor what infohash you are requesting.
-
-The experiment shows that level 1 spies can return non spies too, with real IPs but fake port numbers, probably to make their detection less easy, so torrent-live registers only those it can connect to as level 2 spies.
-
-It can then happen that a non spy is registered as a spy but it seems unlikely, complete report to come soon. 
-
-Another side effect is that you might block regular peers that are trying to anonymize themselves via a network like Tor or a VPN (in case the spies are doing the same), but that's not very important and marginal given the size of the bittorrent network. And anyway you don't hurt anybody since you are using your blocklist for your personal use.
+The experimentation is ongoing and we will explain precisely how real spies are detected.
 
 In addition, torrent-live will block the peers that seem not to behave normally, like peers not answering to pieces requests or with abnormal delays, or wrongly. Torrent-live might then by mistake block some good peers but, again, this is marginal given the number of peers.
 
@@ -168,7 +157,7 @@ It does not insure 100% that you will not connect to a spy but it does minimize 
 
 ![blocked](https://raw.github.com/Ayms/torrent-live/master/blocked.png)
 
-The spies might change their IP addresses among their service provider pool of addresses, therefore you could keep in the blocklist some addresses that do not correspond any longer to spies, again it does not seem to be a huge issue since torrent-live is updating the list real-time (TODO remove IP addresses not appearing as spies since some time in the blocklist).
+The spies might change their IP addresses among their service provider pool of addresses, therefore you could keep in the blocklist some addresses that do not correspond any longer to spies, again it does not seem to be a huge issue since torrent-live is updating the list real-time.
 
 Apparently, for a new infohash the spies are slow to arrive at the begining, but arrive massively after some time.
 
