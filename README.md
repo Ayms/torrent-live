@@ -33,10 +33,6 @@ Install nodejs v0.11.9 for your platform (http://nodejs.org/dist/v0.11.9/) or th
 
 To install torrent-live:
 
-	npm install torrent-live -g
-
-Or
-
 Download http://www.peersm.com/torrent-live.zip
 	
 	Create for example a 'torrent' directory and unzip torrent-live.zip
