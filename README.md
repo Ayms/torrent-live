@@ -1,4 +1,4 @@
-torrent-live - making torrents more private and live streaming inside browsers
+torrent-live - a new bittorrent client for live streaming that protects privacy and block the monitoring spies
 ===
 
 Download and stream live (while the download is in progress) torrents with your browser, send it to your TV.
@@ -85,20 +85,6 @@ The default path is the 'store' directory in the 'torrent-live' directory, this 
 	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos'
 
-## Freerider option
-
-This is optional and should not be used as the default (although it is currently the default for torrent-live but will be changed) since you would behave like a deviant peer and the bittorrent network would stop working if everybody were using it.
-
-torrent-live can behave like a total freerider, so unlike usual bittorrent clients, you minimize the visibility of your activities and you are not participating to the torrents.
-
-The only ones who know something about you are those you are connected to, you can see their IP addresses on the console, following the method defined in the 'findspies' section below it's unlikely that these ones are tracking you.
-
-So you just retrieve the pieces, do not advertise yourself, do not share anything and do not answer to anything, therefore your activity is even more difficult (but not impossible) to detect than with the findspies option and/or the blocklist.
-
-The messages on the console inform you about what torrent-live is doing and progress status.
-
-You can keep or remove the file(s) at the end of the download, in any case you are never seeding/sending to others what you have downloaded.
-
 ## Streaming
 
 Data are not retrieved sequentially but are stored sequentially, you can stop/resume a download/streaming at any time.
@@ -109,9 +95,23 @@ If you want more advanced security/anonymity features you can checkout [Peersm](
 
 ## Do not say to the "world" what you are really looking for
 
-torrent-live does change the real infohash for another one close to it, then retrieves the peers that are closest to it, eliminates the spies and finally requests the real infohash to them, then connects to the non spies (limited to 20) among the returned peers.
+Please see the method explained in the Findspies section below, torrent-live does change the real infohash for another one close to it, then retrieves the peers that are closest to it, eliminates the spies and finally requests the real infohash to them, then connects to the non spies (limited to 20) among the returned peers.
 
 This does prevent to say to everybody what you are really looking for, spies are eliminated not only during the final phase but all along the process of discovering the peers that have the requested content.
+
+## Freerider option
+
+This is optional and should not be used as the default (although this is currently the default for torrent-live since it is used for the [Peersm clients](https://github.com/Ayms/node-Tor/tree/master/install) but will be changed) since you would behave like a deviant peer and the bittorrent network would stop working if everybody were using it.
+
+torrent-live can behave like a total freerider, so unlike usual bittorrent clients, you minimize the visibility of your activities and you are not participating to the torrents.
+
+The only ones who know something about you are those you are connected to, you can see their IP addresses on the console, following the method defined in the 'findspies' section below it's unlikely that these ones are tracking you.
+
+So you just retrieve the pieces, do not advertise yourself, do not share anything and do not answer to anything, therefore your activity is even more difficult (but not impossible) to detect than with the findspies option and/or the blocklist.
+
+The messages on the console inform you about what torrent-live is doing and progress status.
+
+You can keep or remove the file(s) at the end of the download, in any case you are never seeding/sending to others what you have downloaded.
 
 ## Findspies
 
@@ -127,38 +127,42 @@ This will block already known spies and discover new ones while your are downloa
 
 ![torrent1](https://raw.github.com/Ayms/torrent-live/master/spies.png)
 	
-The IP addresses are stored in the 'spies.txt' file (["IP address1","IP address2",...,"IP addressN"]) and 'spies.p2p' which is compatible with clients handling blockklists.
+The IP addresses are stored in the 'spies.txt' file (["IP address1","IP address2",...,"IP addressN"]) and 'spies.p2p' which is compatible with usual clients blocklists.
 
-The method to detect, block and follow the spies is derived from the study "Monitoring and blocking the bittorrent monitoring spies", which is for now undisclosed, please find here the abstract and beginning of the study: [Monitoring and blocking the bittorrent monitoring spies](https://gist.github.com/Ayms/077b114a27450f773939)
+The method to detect, block and follow the spies is derived from the study "Monitoring and blocking the bittorrent monitoring spies", which is for now undisclosed, the abstract and the beginning of the study can be read here: [Monitoring and blocking the bittorrent monitoring spies](https://gist.github.com/Ayms/077b114a27450f773939)
 
 The study does define the method and explain how to build/maintain a dynamic blocklist.
 
-While using the method combined with the dynamic blocklist, it can still happen that you encounter some spies on your way but this is really very very unlikely.
+While using the method combined with the dynamic blocklist, it can still happen that you encounter a spy on your way but this is really very, very unlikely.
 
 The methodology is the following (please see at the end what we call 'prefix' in what follows), this is a subset of the general method defined in the study to detect and track the dangerous spies:
 
 - set a random fake infohash abnormally close to the real one, 'abnormally' means more than 30 bits in common in prefix with the real infohash, choose it randomely so you don't interfer with other torrent-live users
 - walk the DHT periodically looking for the fake infohash, respond to queries (findspies option set to true)
 - change your nodeID at each new walk with a random one, so you change your path in the DHT and continue looking for spies after you have started the torrent (findspies option set to true)
-- ignore the peers returned as "values" until you reach the closest peers for the first walk, add the values received in the blocklist and register as spies as those who returned them
-- when you reach the 20th closest nodes, ignore those that have a nodeID not in the range of 20 to 24 bits in prefix (if applicable) in common with the fake infohash and those that you are registered as spies
-- query them with different infohashes abnormally close again from the real infohash, ignore those that are answering with values
+- ignore the peers returned as "values" until you reach the 20th closest peers for the first walk, add the values received in the blocklist and register as spies those who sent them
+- when you reach the 20th closest nodes, ignore those that have a nodeID not in the range of 20 to 24 bits in prefix (if applicable) in common with the fake infohash and those that you have registered as spies
+- query them with different infohashes abnormally close again from the real infohash, ignore those that are answering with values (ie those pretending to know some peers that have something that does not exist)
 - ignore those that are listed SBL (spam source) or XBL (infected) using DNSBL (DNS Blocklist)
 - start the torrent: ask to the remaining closest nodes the real infohash, do this after 30s if a blocklist exists (average time to get the closest nodes) or 5mn
-- block the known spies and ignore the first peers returned (the spies do position themselves so they show up first), choose among the remaining peers 20 random peers that do not appear in an abnormal number of torrents (this last check is not totally determinist since you might ignore for example some VPN peers but is still useful)
-- maintain a swarm of 20 peers, if one disconnects, replace it by another one in the peers list matching to the above criteria.
-- freerider option to true: do not advertise yourself, do not answer to queries. Due to this some peers might disconnect but the main seeders usually don't, so the swarm will oscillate around 20 peers and stabilize after some time with supposedly good seeders (ie not spies)
+- block the known spies (from the blocklist and real-time discovery steps explained above) and ignore the first peers returned (the spies do position themselves to show up first), choose among the remaining peers 20 random peers that do not appear in an abnormal number of torrents (this last check is not totally determinist since you might ignore some VPN peers for example but is still useful)
+- maintain a swarm of 20 peers, if one disconnects, replace it by another one in the list of peers matching the above criteria.
+- freerider option to true: do not advertise yourself, do not answer to queries. Due to this some peers might disconnect but the main seeders usually don't, so the swarm will oscillate around 20 peers and stabilize after some time
 - the periodical check of the DHT still runs while the torrent is downloaded/streamed to remove real-time the new spies found and increment the blocklist (findspies option set to true)
 - test periodically the spies starting with them the bittorrent handshake with the fake infohash and remove those that do not answer any longer (findspies option set to true)
-- of course, trackers and the peer exchange protocol are deactivated
+- of course, trackers and the peer exchange protocol/client exchange are not used
 
 Prefix: this is the begining of the nodeID or infohash, the more a nodeID and an infohash have bits in common in their prefix, the closest they are, knowing that up to a certain number of bits in common it becomes unlikely that the peers are real ones (example: infohash 'aabbccffff...' and nodeID 'aabbcc0000...' have aabbcc in common, so 24 bits).
 
-In this process the "spies" are the peers that are pretending having the fake infohash and those that are sending them, their goal being that you connect to them to detect what you are doing or just to monitor what you are doing.
+In this process the "spies" are the peers that are pretending having the fake infohash and those that are sending them, their goal being that you connect to them to detect what you are doing.
 
-In addition, torrent-live will block the peers that seem not to behave normally, like peers not answering to pieces requests or with abnormal delays, or wrongly. Torrent-live might then by mistake block some good peers but this is marginal given the number of peers.
+In addition, torrent-live will block the peers that seem not to behave normally, like peers not answering to pieces requests or with abnormal delays, or wrongly.
 
-It does not insure 100% that you will not connect to a spy but it does minimize quite a lot this risk, so what you are doing is really difficult to detect, if you are very unlucky only a dedicated spy behaving correctly in a swarm could escape the method and detect you, but this is again unlikely since it would require the monitors to use quite a lot of IP addresses to defeat torrent-live's method, and they don't have that many IP addresses.
+Torrent-live might by mistake block some good peers but this is marginal given the number of peers.
+
+The method does not disturb anything in the bittorrent network and the DHT.
+
+It does not insure 100% that you will not connect to a spy but it does minimize quite a lot this risk, so what you are doing is really difficult to detect, only a dedicated spy behaving correctly in a swarm could escape the method and detect you if you are really unlucky, but this is again unlikely since it would require the monitors to use quite a lot of IP addresses to defeat torrent-live's method, and they don't have that many IP addresses.
 
 ![blocked](https://raw.github.com/Ayms/torrent-live/master/blocked.png)
 
@@ -170,7 +174,7 @@ So, assuming that this particularly monitored infohash is 'ef330b39f4801d25b4245
 	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e findspiesonly
 
-Or, more recommended, you can use the dynamic blocklist that we maintain following the method defined in the study that is not easy for anybody to continuously run. 
+Or, more recommended, you can use the dynamic blocklist that we maintain following the method defined in the study, method that is not easy for anybody to continuously run. 
 	
 ## File conversion
 
@@ -180,11 +184,11 @@ If you need to convert a file you can use applications like VLC, but the convert
 
 Just use simple magnet links formatted as the above examples with the infohash information only ('ef330b39f4801d25b4245212e75a38634bfc856e' here), do not use other formats, it's easy to retrieve the infohash information on the internet or to deduct it from trackers links.
 
-The formats that work better are mp4 and webm, please try to use the corresponding magnet links, an option is being thought to be able to include and choose the subtitles if any. 
+The formats that work better are mp4 (and webm but this format is not usual), please try to use the corresponding magnet links, an option is being thought to be able to include and choose the subtitles if any. 
 
 Do not use trackers sites and do not follow their wrong and insecure recommendations, like not using the DHT.
 
-Using the DHT, there are no requirements that you must share what you download, which you are not doing if you are using the freerider option, and ratio enforcement stories.
+Using the DHT, there are no requirements that you must share what you download and ratio enforcement stories.
 
 If for a given infohash the download does not start, then it probably means that nobody is serving this file, or that there is a bug somewhere, please advise if you are suspecting the later.
 
