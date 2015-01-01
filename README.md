@@ -15,7 +15,7 @@ You just have to initiate a download (magnet:?xt=urn:btih:ef330b39f4801d25b42452
 
 The streaming will start while the file is being downloaded.
 
-If you are not using the 'findspies' option and you have already created a blocklist using the 'findspies' or 'findspiesonly' options previously or if you have created it by yourself or if you are using our dynamic blocklist, then it will systematically be used to block the related IP addresses, please see the 'Findspies' section below for more details.
+If you have already created a blocklist using the 'findspies' or 'findspiesonly' options previously or if you have created it by yourself or if you are using our dynamic blocklist, then it will systematically be used to block the related IP addresses, as well as the method to protect your privacy and detect/block the monitoring spies, please see the 'Findspies' section below for more details.
 
 If you have something like Chromecast you can use the Chrome browser and the Cast extension (https://chrome.google.com/webstore/detail/google-cast/boadgeojelhgndaghljhdicfkmllpafd) to send it to your TV.
 
@@ -143,7 +143,7 @@ The methodology is the following (please see at the end what we call 'prefix' in
 - ignore the peers returned as "values" until you reach the 20th closest peers for the first walk, add the values received in the blocklist and register as spies those who sent them
 - when you reach the 20th closest nodes, ignore those that have a nodeID not in the range of 20 to 24 bits in prefix (if applicable) in common with the fake infohash and those that you have registered as spies
 - ignore those that are listed SBL (spam source) or XBL (infected) using DNSBL (DNS Blocklist)
-- query them with different infohashes abnormally close again from the real infohash, ignore those that are answering with values (ie those pretending to know some peers that have something that does not exist)
+- query them with different infohashes abnormally close again from the real infohash, ignore those that are answering with values (ie those pretending to know some peers that are supposed to have something that does not exist)
 - start the torrent: ask to the remaining closest nodes the real infohash, do this after 30s if a blocklist exists (average time to get the closest nodes) or 5mn
 - block the known spies (from the blocklist and real-time discovery steps explained above) and ignore the first peers returned (the spies do position themselves to show up first), choose among the remaining peers 20 random peers that do not appear in an abnormal number of torrents (this last check is not totally determinist since you might ignore some VPN peers for example but is still useful)
 - maintain a swarm of 20 peers, if one disconnects, replace it by another one in the list of peers matching the above criteria.
