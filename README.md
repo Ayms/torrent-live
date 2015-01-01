@@ -162,7 +162,9 @@ Torrent-live might by mistake block some good peers but this is marginal given t
 
 The method does not disturb anything in the bittorrent network and the DHT.
 
-It does not insure 100% that you will not connect to a spy but it does minimize quite a lot this risk, so what you are doing is really difficult to detect, only a dedicated spy behaving correctly in a swarm could escape the method and detect you if you are really unlucky, but this is again unlikely since it would require the monitors to use quite a lot of IP addresses to defeat torrent-live's method, and they don't have that many IP addresses.
+It does not insure 100% that you will not connect to a spy but it does minimize quite a lot this risk and protects your privacy, so what you are doing is really difficult to detect and to be known from others.
+
+Only a dedicated spy behaving correctly in a swarm could escape the method and detect you if you are really unlucky, but this is again unlikely since it would require the monitors to use quite a lot of IP addresses to defeat torrent-live's method, and they don't have that many IP addresses.
 
 ![blocked](https://raw.github.com/Ayms/torrent-live/master/blocked.png)
 
