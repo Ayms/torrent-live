@@ -135,15 +135,15 @@ The study does define the method and explain how to build/maintain a dynamic blo
 
 While using the method combined with the dynamic blocklist, it can still happen that you encounter a spy on your way but this is really very, very unlikely.
 
-The methodology is the following (please see at the end what we call 'prefix' in what follows), this is a subset of the general method defined in the study to detect and track the dangerous spies:
+The methodology is the following (please see at the end what we call 'prefix' in what follows), this is a subset of the general method defined in the study to detect, track and block the dangerous spies:
 
 - set a random fake infohash abnormally close to the real one, 'abnormally' means more than 30 bits in common in prefix with the real infohash, choose it randomely so you don't interfer with other torrent-live users
 - walk the DHT periodically looking for the fake infohash, respond to queries (findspies option set to true)
 - change your nodeID at each new walk with a random one, so you change your path in the DHT and continue looking for spies after you have started the torrent (findspies option set to true)
 - ignore the peers returned as "values" until you reach the 20th closest peers for the first walk, add the values received in the blocklist and register as spies those who sent them
 - when you reach the 20th closest nodes, ignore those that have a nodeID not in the range of 20 to 24 bits in prefix (if applicable) in common with the fake infohash and those that you have registered as spies
-- query them with different infohashes abnormally close again from the real infohash, ignore those that are answering with values (ie those pretending to know some peers that have something that does not exist)
 - ignore those that are listed SBL (spam source) or XBL (infected) using DNSBL (DNS Blocklist)
+- query them with different infohashes abnormally close again from the real infohash, ignore those that are answering with values (ie those pretending to know some peers that have something that does not exist)
 - start the torrent: ask to the remaining closest nodes the real infohash, do this after 30s if a blocklist exists (average time to get the closest nodes) or 5mn
 - block the known spies (from the blocklist and real-time discovery steps explained above) and ignore the first peers returned (the spies do position themselves to show up first), choose among the remaining peers 20 random peers that do not appear in an abnormal number of torrents (this last check is not totally determinist since you might ignore some VPN peers for example but is still useful)
 - maintain a swarm of 20 peers, if one disconnects, replace it by another one in the list of peers matching the above criteria.
