@@ -160,7 +160,7 @@ In addition, torrent-live will block the peers that seem not to behave normally,
 
 Torrent-live might by mistake block some good peers but this is marginal given the number of peers.
 
-The method does not disturb anything in the bittorrent network and the DHT.
+The method does not disturb anything in the bittorrent network and the DHT since the 'sybils' are ephemeral and won't be kept in the peers routing tables.
 
 It does not insure 100% that you will not connect to a spy but it does minimize quite a lot this risk and protects your privacy, so what you are doing is really difficult to detect and to be known from others.
 
