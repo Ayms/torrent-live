@@ -101,9 +101,9 @@ This does prevent to say to everybody what you are really looking for, spies are
 
 The spies are not the only ones you should protect from, anybody can track you and register/make public your torrenting history:
 
-![normal user](https://raw.github.com/Ayms/torrent-live/master/t3.png)
+![normal user](https://raw.github.com/Ayms/torrent-live/master/t4.png)
 
-![abnormal user](https://raw.github.com/Ayms/torrent-live/master/t4.png)
+![abnormal user](https://raw.github.com/Ayms/torrent-live/master/t5.png)
 
 ## Freerider option
 
@@ -180,7 +180,7 @@ Both are possible but not likely at all, this would require some extra efforts f
 
 The below graph does summarize the behavior of the spies, while the number of discovered spies constantly increases, the number of active spies, which are the dangerous ones, does stabilize:
 
-![blocked](https://raw.github.com/Ayms/torrent-live/master/t5.png)
+![blocked](https://raw.github.com/Ayms/torrent-live/master/t3.png)
 
 ![blocked](https://raw.github.com/Ayms/torrent-live/master/blocked.png)
 
