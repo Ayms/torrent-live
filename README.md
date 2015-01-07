@@ -99,7 +99,7 @@ Please see the method explained in the Findspies section below, torrent-live doe
 
 This does prevent to say to everybody what you are really looking for, spies are eliminated not only during the final phase but all along the process of discovering the peers that have the requested content.
 
-The spies are not the only ones you should protect from, anybody can track you and register/make public your torrenting history:
+The spies are not the only those you should protect from, anybody can track you and register/make public your torrenting history:
 
 ![normal user](https://raw.github.com/Ayms/torrent-live/master/t4.png)
 
