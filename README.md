@@ -99,6 +99,12 @@ Please see the method explained in the Findspies section below, torrent-live doe
 
 This does prevent to say to everybody what you are really looking for, spies are eliminated not only during the final phase but all along the process of discovering the peers that have the requested content.
 
+The spies are not the only ones you should protect from, anybody can track you and register/make public your torrenting history:
+
+![normal user](https://raw.github.com/Ayms/torrent-live/master/t3.png)
+
+![abnormal user](https://raw.github.com/Ayms/torrent-live/master/t4.png)
+
 ## Freerider option
 
 This is optional and should not be used as the default (although this is currently the default for torrent-live since it is used for the [Peersm clients](https://github.com/Ayms/node-Tor/tree/master/install) but will be changed) since you would behave like a deviant peer and the bittorrent network would stop working if everybody were using it.
@@ -142,7 +148,7 @@ The methodology is the following (please see at the end what we call 'prefix' in
 - change your nodeID at each new walk with a random one, so you change your path in the DHT and continue looking for spies after you have started the torrent (findspies option set to true)
 - ignore the peers returned as "values" until you reach the 20th closest peers for the first walk, add the values received in the blocklist and register as spies those who sent them
 - when you reach the 20th closest nodes, ignore those that have a nodeID not in the range of 20 to 24 bits in prefix (if applicable) in common with the fake infohash and those that you have registered as spies
-- ignore those that are listed SBL (spam source) or XBL (infected) using DNSBL (DNS Blocklist)
+- ignore those that are listed SBL (spam source) or XBL (infected) using DNSBL (DNS Blocklist), this check is optional and not really necessary since the next steps will remove the remaining spies, but it's still better to ignore such IP addresses.
 - query them with different infohashes abnormally close again from the real infohash, ignore those that are answering with values (ie those pretending to know some peers that are supposed to have something that does not exist)
 - start the torrent: ask to the remaining closest nodes the real infohash, do this after 30s if a blocklist exists (average time to get the closest nodes) or 5mn
 - block the known spies (from the blocklist and real-time discovery steps explained above) and ignore the first peers returned (the spies do position themselves to show up first), choose among the remaining peers 20 random peers that do not appear in an abnormal number of torrents (this last check is not totally determinist since you might ignore some VPN peers for example but is still useful)
@@ -162,9 +168,19 @@ Torrent-live might by mistake block some good peers but this is marginal given t
 
 The method does not disturb anything in the bittorrent network and the DHT since the 'sybils' are ephemeral and won't be kept in the peers routing tables.
 
-It does not insure 100% that you will not connect to a spy but it does minimize quite a lot this risk and protects your privacy, so what you are doing is really difficult to detect and to be known from others.
+Using the method alone is enough to render quasi null the probability to encounter a spy.
 
-Only a dedicated spy behaving correctly in a swarm could escape the method and detect you if you are really unlucky, but this is again unlikely since it would require the monitors to use quite a lot of IP addresses to defeat torrent-live's method, and they don't have that many IP addresses.
+Combining it with the dynamic blocklist makes it even stronger, especially to avoid that the monitors connect to you.
+
+One case you could get caught would result from a combination of very bad luck with a spy really looking after you or a targeted torrent with a dedicated unknown/not suspicious IP address behaving normally in a swarm, so participating to the copyright infrigement in order not to be detected, which would be extraordinary.
+
+Another one would be for a spy not detected in the dynamic blocklist to connect to you and request pieces.
+
+Both are possible but not likely at all, this would require some extra efforts from the monitors and quite a lot of IP addresses in order not to be detected by torrent-live, which they don't have.
+
+The below graph does summarize the behavior of the spies, while the number of discovered spies constantly increases, the number of active spies, which are the dangerous ones, does stabilize:
+
+![blocked](https://raw.github.com/Ayms/torrent-live/master/t5.png)
 
 ![blocked](https://raw.github.com/Ayms/torrent-live/master/blocked.png)
 
