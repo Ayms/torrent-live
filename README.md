@@ -129,7 +129,7 @@ This option is always enabled for the method explained below but if you wish to 
 	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos' findspies
 	
-This will block already known spies and discover new ones while your are downloading/streaming, the real torrent will start after 30s if a blocklist already exists or 5mn.
+This will continue discovering new spies while your are downloading/streaming, but this is not really useful if you are using the dynamic blocklist, the real torrent will start after 30s if a blocklist already exists or 5mn.
 
 ![torrent1](https://raw.github.com/Ayms/torrent-live/master/spies.png)
 	
