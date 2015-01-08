@@ -131,7 +131,7 @@ This option is always enabled for the method explained below but if you wish to 
 	
 This will continue discovering new spies while your are downloading/streaming, but this is not really useful if you are using the dynamic blocklist, the real torrent will start after 30s if a blocklist already exists or 5mn.
 
-![torrent1](https://raw.github.com/Ayms/torrent-live/master/spies.png)
+![spies](https://raw.github.com/Ayms/torrent-live/master/spies.png)
 	
 The IP addresses are stored in the 'spies.txt' file (["IP address1","IP address2",...,"IP addressN"]) and 'spies.p2p' which is compatible with usual clients blocklists.
 
