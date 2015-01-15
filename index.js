@@ -606,7 +606,7 @@ var torrentStream = function(link, opts, cb) {
 
 			// We know only infoHash here, not full infoDictionary.
 			// But infoHash is enough to connect to trackers and get peers.
-			
+
 			if (!buf) return discovery.setTorrent(link);
 
 			var torrent = parseTorrent(buf);
