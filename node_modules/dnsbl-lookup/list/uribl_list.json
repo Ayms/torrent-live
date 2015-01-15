@@ -1,0 +1,177 @@
+[
+  {
+    "zone": "0spamurl.fusionzero.com",
+    "name": "0spam url-DBL",
+    "url": "http://0spam.fusionzero.com/"
+  },
+  {
+    "zone": "uribl.zeustracker.abuse.ch",
+    "name": "abuse.ch ZeuS Tracker Domain",
+    "url": "https://zeustracker.abuse.ch/"
+  },
+  {
+    "zone": "uribl.abuse.ro",
+    "name": "abuse.ro URI RBL",
+    "url": "http://www.abuse.ro/"
+  },
+  {
+    "zone": "l1.apews.org",
+    "name": "APEWS Level 1",
+    "url": "http://www.apews.org/"
+  },
+  {
+    "zone": "dnsbl.aspnet.hu",
+    "name": "ASPnet DNSBL/URIBL",
+    "url": "http://dnsbl.aspnet.hu/"
+  },
+  {
+    "zone": "bsb.empty.us",
+    "name": "Blog Spam Blocklist (empty.us)",
+    "url": "http://bsb.empty.us/"
+  },
+  {
+    "zone": "bsb.spamlookup.net",
+    "name": "Blog Spam Blocklist (spamlookup.net)",
+    "url": "http://bsb.spamlookup.net/"
+  },
+  {
+    "zone": "ex.dnsbl.org",
+    "name": "DNS-bl ex zone",
+    "url": "http://www.dnsbl.org/"
+  },
+  {
+    "zone": "in.dnsbl.org",
+    "name": "DNS-bl in zone",
+    "url": "http://www.dnsbl.org/"
+  },
+  {
+    "zone": "dnsbl.othello.ch",
+    "name": "dnsbl.othello.ch",
+    "url": "http://software.othello.ch/mod_dnsbl/"
+  },
+  {
+    "zone": "rhsbl.mailhosts.org",
+    "name": "Mailhosts.org RHSBL",
+    "url": "http://mailhosts.org/"
+  },
+  {
+    "zone": "ubl.nszones.com",
+    "name": "nsZones.com SURBL",
+    "url": "http://nszones.com/"
+  },
+  {
+    "zone": "uribl.pofon.foobar.hu",
+    "name": "pofon.foobar.hu URI Blacklist",
+    "url": "https://rbl.foobar.hu/"
+  },
+  {
+    "zone": "dyndns.rbl.jp",
+    "name": "RBL.JP dyndns domains",
+    "url": "http://www.rbl.jp/allrbl-e.html"
+  },
+  {
+    "zone": "url.rbl.jp",
+    "name": "RBL.JP url",
+    "url": "http://www.rbl.jp/allrbl-e.html"
+  },
+  {
+    "zone": "rhsbl.rymsho.ru",
+    "name": "Rymsho's RHSBL",
+    "url": "http://spam.rymsho.ru/"
+  },
+  {
+    "zone": "nomail.rhsbl.sorbs.net",
+    "name": "SORBS Domain names indicating no email sender",
+    "url": "http://www.sorbs.net/"
+  },
+  {
+    "zone": "badconf.rhsbl.sorbs.net",
+    "name": "SORBS Domain names pointing to bad addresses",
+    "url": "http://www.sorbs.net/"
+  },
+  {
+    "zone": "rhsbl.sorbs.net",
+    "name": "SORBS RHS Aggregate zone",
+    "url": "http://www.sorbs.net/"
+  },
+  {
+    "zone": "fresh.spameatingmonkey.net",
+    "name": "Spam Eating Monkey SEM-FRESH",
+    "url": "http://spameatingmonkey.com/"
+  },
+  {
+    "zone": "fresh10.spameatingmonkey.net",
+    "name": "Spam Eating Monkey SEM-FRESH10",
+    "url": "http://spameatingmonkey.com/"
+  },
+  {
+    "zone": "fresh15.spameatingmonkey.net",
+    "name": "Spam Eating Monkey SEM-FRESH15",
+    "url": "http://spameatingmonkey.com/"
+  },
+  {
+    "zone": "uribl.spameatingmonkey.net",
+    "name": "Spam Eating Monkey SEM-URI",
+    "url": "http://spameatingmonkey.com/"
+  },
+  {
+    "zone": "urired.spameatingmonkey.net",
+    "name": "Spam Eating Monkey SEM-URIRED",
+    "url": "http://spameatingmonkey.com/"
+  },
+  {
+    "zone": "dbl.spamhaus.org",
+    "name": "Spamhaus DBL Domain Block List",
+    "url": "http://www.spamhaus.org/dbl/"
+  },
+  {
+    "zone": "multi.surbl.org",
+    "name": "SURBL multi (Combined SURBL list)",
+    "url": "http://www.surbl.org/"
+  },
+  {
+    "zone": "xs.surbl.org",
+    "name": "SURBL xs (snowshoe and pill domains)",
+    "url": "http://www.surbl.org/"
+  },
+  {
+    "zone": "uribl.swinog.ch",
+    "name": "Swinog URIBL",
+    "url": "http://antispam.imp.ch/05-uribl.php?lng=1"
+  },
+  {
+    "zone": "dob.sibl.support-intelligence.net",
+    "name": "The Day Old Bread List (aka DOB)",
+    "url": "http://support-intelligence.com/dob/"
+  },
+  {
+    "zone": "black.uribl.com",
+    "name": "URIBL black",
+    "url": "http://www.uribl.com/"
+  },
+  {
+    "zone": "grey.uribl.com",
+    "name": "URIBL grey",
+    "url": "http://www.uribl.com/"
+  },
+  {
+    "zone": "multi.uribl.com",
+    "name": "URIBL multi",
+    "url": "http://www.uribl.com/"
+  },
+  {
+    "zone": "red.uribl.com",
+    "name": "URIBL red",
+    "url": "http://www.uribl.com/"
+  },
+  {
+    "zone": "uri.blacklist.woody.ch",
+    "name": "Woody's SMTP Blacklist URIBL",
+    "url": "http://blacklist.woody.ch/rblcheck.php3"
+  },
+  {
+    "zone": "rhsbl.zapbl.net",
+    "name": "ZapBL RHSBL",
+    "url": "http://zapbl.net/"
+  }
+]
