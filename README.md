@@ -167,6 +167,8 @@ In addition, torrent-live will block the peers that seem not to behave normally,
 
 Torrent-live might by mistake block some good peers (for example the VPN peers) but this is marginal given the number of peers.
 
+![blocked](https://raw.github.com/Ayms/torrent-live/master/blocked.png)
+
 The method does not disturb anything in the bittorrent network and the DHT since the 'sybils' are ephemeral and won't be kept in the peers routing tables (except the crawlers, but there is only one per infohash).
 
 Using the method alone is enough to render quasi null the probability to encounter a spy.
@@ -178,8 +180,6 @@ One case you could get caught would result from a combination of very bad luck w
 Another one would be for a spy not detected in the dynamic blocklist to connect to you and request pieces.
 
 Both are possible but not likely at all, this would require some extra efforts from the monitors and quite a lot of IP addresses in order not to be detected by torrent-live, which they don't have.
-
-![blocked](https://raw.github.com/Ayms/torrent-live/master/blocked.png)
 
 There is only one situation that nothing can protect you from: a spy behaving normally in a torrent, it's very unlikely that the copyright monitors do so (some monitors are participating in the swarms but their behavior is never normal and is detected by torrent-live), but others can (police, censors, etc), the problem for them being that they would also be infringing the copyright.
 
