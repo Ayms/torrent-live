@@ -9,6 +9,8 @@ Torrent-live is not using unsafe trackers and client/peer exchanges mechanisms, 
 
 ## Presentation
 
+Check out [torrent-live](http://www.torrent-live.org) for a more general presentation and to get the dynamic blocklist.
+
 This is based on the excellent [torrent-stream](https://github.com/mafintosh/torrent-stream) and [bittorrent-dht](https://github.com/feross/bittorrent-dht) modules.
 
 You just have to initiate a download (magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e corresponding to myvideo.mp4) and open your browser on the file that is being downloaded (typically with an URL like <b>file:///D:/torrent/torrent-live/store/myvideo.mp4</b>)
