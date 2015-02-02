@@ -207,7 +207,7 @@ Our crawlers are using the following method to detect and track the spies:
 - each process gets the closest nodes and crawls the DHT sending get_peers requests
 - tag as spies the peers returned as values (so those pretending to have something that does not exist) and keep a reference to the infohashes that allowed to discover them
 - test them starting with them the bittorrent handshake with the infohash used to discover them and register them in the blocklist if the TCP/uTP connection is successful, if for a given infohash too many peers are answering correctly to the bittorrent handshake then disconsider them and end the related process, the given infohash is an existing one.
-- once a process reaches the closest node, end it and start a new one with a infohash and a nodeID set to crawl in total the 2^20 (~1 M) bittorrent space (so fill at each new crawl with this process the 20-n remaining bits and choose a random number for the remaining 160 - 20 bits.
+- once a process reaches the closest nodes, query them with get_peers request and handle the peers returned as values as explained above, end the process and start a new one with a infohash and a nodeID set to crawl in total the 2^20 (~1 M) bittorrent space (so fill at each new crawl with this process the 20-n remaining bits and choose a random number for the remaining 160 - 20 bits.
 - test periodically each spy in the blocklist starting the bittorrent handshake with it with the infohash that allowed to discover it, keep it in the blocklist if the TCP/uTP connection is successful, remove it if not.
 - mark as permanent spies those that are implementing several ports/nodeIDs for the same IP and don't check them periodically
 
