@@ -207,11 +207,11 @@ Our crawlers are using the following method to detect and track the spies:
 - each process gets the closest nodes and crawls the DHT sending get_peers requests
 - tag as spies the peers returned as values (so those pretending to have something that does not exist) and keep a reference to the infohashes that allowed to discover them
 - test them starting with them the bittorrent handshake with the infohash used to discover them and register them in the blocklist if the TCP/uTP connection is successful, if for a given infohash too many peers are answering correctly to the bittorrent handshake then disconsider them and end the related process, the given infohash is an existing one.
-- once a process reaches the closest nodes, query them with get_peers request and handle the peers returned as values as explained above, end the process and start a new one with a infohash and a nodeID set to crawl in total the 2^20 (~1 M) bittorrent space (so fill at each new crawl with this process the 20-n remaining bits and choose a random number for the remaining 160 - 20 bits.
+- once a process reaches the closest nodes, query them with get_peers request and handle the peers returned as values as explained above, end the process and start a new one with an infohash and a nodeID set to crawl in total the 2^20 (~1 M) bittorrent space (so fill at each new crawl with this process the 20-n remaining bits and choose a random number for the remaining 160 - 20 bits.
 - test periodically each spy in the blocklist starting the bittorrent handshake with it with the infohash that allowed to discover it, keep it in the blocklist if the TCP/uTP connection is successful, remove it if not.
 - mark as permanent spies those that are implementing several ports/nodeIDs for the same IP and don't check them periodically
 
-The lifetime of each process is about 30s, this does not disturb the DHT since they do nothing else than crawling and won't be kept in the peers routing table since they are ephemeral.
+The lifetime of each process is about 30s, so an entire cycle to crawl the whole DHT will typically take about 8 hours, this does not disturb the DHT since the processe do nothing else than crawling and won't be kept in the peers routing table since they are ephemeral.
 
 Typically the blocklist oscillates between 10 000 and 40 000 spies, running this method with different servers and making the intersection of the different blocklists ALWAYS gives about 3000 spies in common.
 
@@ -219,7 +219,7 @@ Among the 3000 spies we believe that only a few hundreds are real spies but at a
 
 Among these few hundreds some of the spies never rotate their IPs since probably this would become more complicate for them to do the job.
 
-The method is determinist and does allow to catch quasi all the spies, only a few could escape like newcomers or those that rotate their IPs faster than the crawlers, but that's just a matter of processing capabilities to get them all.
+The method is determinist and does allow to catch quasi all the spies, only a few could escape like newcomers or those that rotate their IPs faster than the crawlers' cycles, but that's just a matter of processing capabilities to get them all.
 	
 ## Transcoding and File conversion
 
