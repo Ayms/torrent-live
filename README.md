@@ -195,7 +195,31 @@ So, assuming that this particularly monitored infohash is 'ef330b39f4801d25b4245
 	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e findspiesonly
 
-Or, more recommended, you can use the dynamic blocklist that we maintain following the method defined in the study, method that is not easy for anybody to continuously run. 
+Or, more recommended, you can use the dynamic blocklist that we maintain following the method defined in the study, method that is not easy for anybody to continuously run.
+
+## How is the dynamic blocklist created/maintained?
+
+Our crawlers are using the following method to detect and track the spies:
+
+- run simultanously as many processes as your processing capabilities does allow covering the 2^n infohashes space of the bittorrent network, typically n is 10 (so 1024 processes)
+- each process implements a nodeID in order to cover the 2^n nodeIDs space of the bittorrent network
+- for nodeIDs and infohashes the remaining 160 - n bits part is a random number, most probably the resulting infohash does not exist in the bittorrent network
+- each process gets the closest nodes and crawls the DHT sending get_peers requests
+- tag as spies the peers returned as values (so those pretending to have something that does not exist) and keep a reference to the infohashes that allowed to discover them
+- test them starting the bittorrent handshake with them with the infohash used to discover them and register them in the blocklist if the TCP/uTP connection is successful, if for a given infohash too many peers are answering correctly to the bittorrent handshake then disconsider them and end the related process, the given infohash is an existing one.
+- once a processe reaches the closest node, end it and start a new one with a infohash and a nodeID set to crawl in total the 2^20 bittorrent space (so fill at each new crawl with this process the 20-n remaining bits and choose a random number for the remaining 160 - n bits.
+- test periodically each spy in the blocklist starting the bittorrent handshake with it with the infohash that allowed to discover it, keep it in the blocklist if the TCP/uTP connection is successful, remove it if not.
+- mark as permanent spies those that are implementing several ports/nodeIDs for the same IP and don't check them periodically
+
+The lifetime of each process is about 30s, this does not disturb the DHT since they do nothing else than crawling and won't be kept in the peers routing table since they are ephemeral.
+
+Typically the blocklists oscillates between 10 000 and 40 000 spies, running this method with different servers and making the intersection of the different blocklists ALWAYS give about 3000 spies in common.
+
+Among the 3000 spies we believe that only a few hundreds are real spies but at a certain point of time it becomes difficult to sort them.
+
+Among these few hundreds some of the spies never rotate their IPs since probably this would become more complicate for them to do the job.
+
+The method is determinist and does allow to catch quasi all the spies, only a few like newcomers or those that rotate their IPs faster than the crawlers can escape, but that's just a matter of processing capabilities to get them all.
 	
 ## Transcoding and File conversion
 
