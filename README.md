@@ -201,13 +201,13 @@ Or, more recommended, you can use the dynamic blocklist that we maintain followi
 
 Our crawlers are using the following method to detect and track the spies:
 
-- run simultanously as many processes as your processing capabilities does allow covering the 2^n infohashes space of the bittorrent network, typically n is 10 (so 1024 processes)
+- run simultanously as many processes as your processing capabilities do allow covering the 2^n infohashes space of the bittorrent network, typically n is 10 (so 1024 processes)
 - each process implements a nodeID in order to cover the 2^n nodeIDs space of the bittorrent network
 - for nodeIDs and infohashes the remaining 160 - n bits part is a random number, most probably the resulting infohash does not exist in the bittorrent network
 - each process gets the closest nodes and crawls the DHT sending get_peers requests
 - tag as spies the peers returned as values (so those pretending to have something that does not exist) and keep a reference to the infohashes that allowed to discover them
-- test them starting the bittorrent handshake with them with the infohash used to discover them and register them in the blocklist if the TCP/uTP connection is successful, if for a given infohash too many peers are answering correctly to the bittorrent handshake then disconsider them and end the related process, the given infohash is an existing one.
-- once a processe reaches the closest node, end it and start a new one with a infohash and a nodeID set to crawl in total the 2^20 bittorrent space (so fill at each new crawl with this process the 20-n remaining bits and choose a random number for the remaining 160 - n bits.
+- test them starting with them the bittorrent handshake with the infohash used to discover them and register them in the blocklist if the TCP/uTP connection is successful, if for a given infohash too many peers are answering correctly to the bittorrent handshake then disconsider them and end the related process, the given infohash is an existing one.
+- once a processe reaches the closest node, end it and start a new one with a infohash and a nodeID set to crawl in total the 2^20 bittorrent space (so fill at each new crawl with this process the 20-n remaining bits and choose a random number for the remaining 160 - 20 bits.
 - test periodically each spy in the blocklist starting the bittorrent handshake with it with the infohash that allowed to discover it, keep it in the blocklist if the TCP/uTP connection is successful, remove it if not.
 - mark as permanent spies those that are implementing several ports/nodeIDs for the same IP and don't check them periodically
 
