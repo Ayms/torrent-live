@@ -1,4 +1,4 @@
-torrent-live - a new bittorrent client for live streaming that protects privacy and block the monitoring spies
+torrent-live - a new bittorrent client for live streaming that protects privacy and blocks the monitoring spies
 ===
 
 Download and stream live (while the download is in progress) torrents with your browser, send it to your TV.
@@ -6,6 +6,8 @@ Download and stream live (while the download is in progress) torrents with your 
 Torrent-live is a new open source bittorrent client which detects, blocks and follows the monitoring spies, making your use of the bittorrent network much more private and safe, do not say to everybody what you are really looking for and minimize your visibility, ultimately activate the optional total freerider option, easy to install and use.
 
 Torrent-live is not using unsafe trackers and client/peer exchanges mechanisms, only the bittorrent DHT (Distributed Hash Table).
+
+This project and the related study [Monitoring and blocking the bittorrent monitoring spies](https://gist.github.com/Ayms/077b114a27450f773939) do not aim to encourage things such as copyright infrigement but aim to protect the users and their privacy from mass surveillance.
 
 ## Presentation
 
@@ -27,7 +29,7 @@ If you have something like Chromecast you can use the Chrome browser and the Cas
 
 ## Supported formats
 
-All usual audio/video formats are supported inside browsers (h264/mp4, webm, avi, mkv, etc).
+All usual audio/video formats are supported inside browsers (mp4, webm, avi, mkv, etc).
 
 Please see the 'Transcoding - File conversion' section below.
 
@@ -115,15 +117,15 @@ The spies are not the only ones you should protect from, anybody can track you a
 
 torrent-live can behave like a total freerider, so unlike usual bittorrent clients, you minimize the visibility of your activities and you are not participating to the torrents.
 
-The only ones who know something about you are those you are connected to, you can see their IP addresses on the console, following the method defined in the 'findspies' section below it's unlikely that these ones are tracking you.
+The only peers who know something about you are those you are connected to, you can see their IP addresses on the console, following the method defined in the 'findspies' section below makes it unlikely that these peers are tracking you.
 
-So you just retrieve the pieces, do not advertise yourself, do not share anything and do not answer to anything, therefore your activity is even more difficult (but not impossible) to detect than with the findspies option and/or the blocklist.
+So you just retrieve the pieces, do not advertise yourself, do not share anything and do not answer to anything, therefore your activity is even more difficult (but not impossible) to detect than with the findspies option and/or the blocklist only.
 
 This is currently the default, you do not accept any incoming connection and do not participate to anything neither seed anything.
 
 Unlike the other privacy features, it would highly disturb the network if a lot of people were using it, you can deactivate it if you don't like it.
 
-The question remains if it has to stay the default but another question is why the bittorrent clients do nothing to protect you and do implement the known method to defeat most of the spies for other services (like chat) but not in the bittorrent network?
+The question remains if it has to stay the default but another question is why the bittorrent clients do nothing to protect you and implement the known method to defeat most of the spies for other services (like chat) but not for the bittorrent network?
 
 You can keep or remove the file(s) at the end of the download, in any case you are never seeding/sending to others what you have downloaded.
 
