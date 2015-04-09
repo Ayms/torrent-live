@@ -579,13 +579,15 @@ var torrentStream = function(link, opts, cb) {
 		});
 
 		ontorrent(parseTorrent(buf));
-
+		//modif
+		/*
 		mkdirp(path.dirname(torrentPath), function(err) {
 			if (err) return engine.emit('error', err);
 			fs.writeFile(torrentPath, buf, function(err) {
 				if (err) engine.emit('error', err);
 			});
 		});
+		*/
 	});
 
 	swarm.on('wire', function(wire) {
