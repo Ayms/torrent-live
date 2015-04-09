@@ -1,4 +1,4 @@
-torrent-live - a new bittorrent client for live streaming that protects privacy and blocks the monitoring spies
+torrent-live - a new bittorrent client for live streaming that protects privacy and blocks the monitoring spies - dynamic torrent blocklist
 ===
 
 Download and stream live (while the download is in progress) torrents with your browser, send it to your TV.
@@ -19,7 +19,7 @@ You just have to initiate a download (magnet:?xt=urn:btih:ef330b39f4801d25b42452
 
 The streaming will start while the file is being downloaded.
 
-If you have already created a blocklist using the 'findspies' or 'findspiesonly' options previously or if you have created it by yourself or if you are using our dynamic blocklist, then it will systematically be used to block the related IP addresses, as well as the method to protect your privacy and detect/block the monitoring spies, please see the 'Findspies' section below for more details.
+If you have already created a blocklist using the 'findspiesonly' options previously or if you have created it by yourself or if you are using our dynamic blocklist, then it will systematically be used to block the related IP addresses, as well as the method to protect your privacy and detect/block the monitoring spies, please see the 'Findspies' section below for more details.
 
 If you have something like Chromecast you can use the Chrome browser and the Cast extension (https://chrome.google.com/webstore/detail/google-cast/boadgeojelhgndaghljhdicfkmllpafd) to send it to your TV.
 
@@ -31,13 +31,19 @@ If you have something like Chromecast you can use the Chrome browser and the Cas
 
 All usual audio/video formats are supported inside browsers (mp4, webm, avi, mkv, etc).
 
-Please see the 'Transcoding - File conversion' section below.
+You can transcode a file on the fly while it is being downloaded (usually in mp4 or webm format), please see the 'Transcoding - File conversion' section below.
 
 ## Installation and use (Windows, Mac, Linux)
 
-Install nodejs v0.11.9 for your platform (http://nodejs.org/dist/v0.11.9/) or the official nodejs release (http://nodejs.org/download/)
+Install nodejs v0.11.14 for your platform (http://nodejs.org/dist/v0.11.14/)
 
 To install torrent-live:
+
+Go in the directory where you want it to be installed and:
+
+	npm install torrent-live
+	
+Or
 
 Download http://www.peersm.com/torrent-live.zip
 	
@@ -47,11 +53,11 @@ For those who are not familiar with nodejs, on windows for example:
 
 	With your browser download:
 
-http://nodejs.org/dist/v0.11.9/node-v0.11.9-x86.msi
+http://nodejs.org/dist/v0.11.9/node-v0.11.14-x86.msi
 	
 	or for a 64 bits conf:
 
-http://nodejs.org/dist/v0.11.9/x64/node-v0.11.9-x64.msi
+http://nodejs.org/dist/v0.11.9/x64/node-v0.11.14-x64.msi
 
 Then execute the files, this will install node.
 	
@@ -119,13 +125,13 @@ torrent-live can behave like a total freerider, so unlike usual bittorrent clien
 
 The only peers who know something about you are those you are connected to, you can see their IP addresses on the console, following the method defined in the 'findspies' section below makes it unlikely that these peers are tracking you.
 
-So you just retrieve the pieces, do not advertise yourself, do not share anything and do not answer to anything, therefore your activity is even more difficult (but not impossible) to detect than with the findspies option and/or the blocklist only.
+So you just retrieve the pieces, do not advertise yourself, do not share anything and do not answer to anything, therefore your activity is even more difficult (but not impossible) to detect than with the blocklist only.
 
 This is currently the default, you do not accept any incoming connection and do not participate to anything neither seed anything.
 
 Unlike the other privacy features, it would highly disturb the network if a lot of people were using it, you can deactivate it if you don't like it.
 
-The question remains if it has to stay the default but another question is why the bittorrent clients do nothing to protect you and implement the known method to defeat most of the spies for other services (like chat) but not for the bittorrent network?
+The question remains if it has to stay the default but another question is why the bittorrent clients do nothing to protect you.
 
 You can keep or remove the file(s) at the end of the download, in any case you are never seeding/sending to others what you have downloaded.
 
@@ -272,6 +278,7 @@ More user friendly web based interface.
 
 ## Related projects :
 
+* [Ayms/node-Tor](https://github.com/Ayms/bittorrent-nodeid)
 * [Ayms/node-Tor](https://github.com/Ayms/node-Tor)
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
 * [Interception Detector](http://www.ianonym.com/intercept.html)
