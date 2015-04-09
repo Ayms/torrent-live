@@ -11,7 +11,7 @@ This project and the related study [Monitoring and blocking the bittorrent monit
 
 ## Presentation
 
-Check out [torrent-live](http://www.torrent-live.org) for a more general presentation and to get the dynamic blocklist.
+Check out [torrent-live](http://www.torrent-live.org) for a more general presentation and to get the dynamic torrent blocklist.
 
 This is based on the excellent [torrent-stream](https://github.com/mafintosh/torrent-stream) and [bittorrent-dht](https://github.com/feross/bittorrent-dht) modules.
 
