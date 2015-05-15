@@ -174,6 +174,7 @@ The methodology is the following (please see at the end what we call 'prefix' in
 - the periodical check of the DHT still runs while the torrent is downloaded/streamed to remove real-time the new spies found and increment the blocklist (findspiesonly option set to true)
 - test periodically the spies starting with them the bittorrent handshake with the fake infohash and remove those that do not answer any longer (findspiesonly option set to true)
 - of course, trackers and the peer exchange protocol/client exchange are not used
+- TBD and not implemented yet: ignore the peers that are not following the "DHT security extension (bep42)", ie the peers that have not their nodeIDs tied to their IP addreses, we need to evaluate the percentage of peers that are following this rule.
 
 Prefix: this is the begining of the nodeID or infohash, the more a nodeID and an infohash or a nodeID have bits in common in their prefix, the closest they are, knowing that up to a certain number of bits in common it becomes unlikely that the peers are real ones (example: infohash 'aabbccffff...' and nodeID 'aabbcc0000...' have aabbcc in common, so 24 bits).
 
