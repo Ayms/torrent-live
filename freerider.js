@@ -54,6 +54,8 @@ var bittorrent=require('./index.js'),
 	utp=require('./node_modules/utp/index.js'),
 	compact2string=require('./node_modules/compact2string/index.js'),
 	lookup=require('./node_modules/dnsbl-lookup/index.js'),
+	generate_id=require('./node_modules/bittorrent-nodeid/index.js'),
+	parseTorrent = require('parse-torrent'),
 	os=require('os'),
 	fs=require('fs'),
 	http=require('http'),
@@ -109,6 +111,7 @@ var bittorrent=require('./index.js'),
 	TEST_BLOCKLIST=60*60*1000,
 	QUERY_BLOCKLIST=15*60*1000,
 	QUERY_BLOCKLIST2=60*60*1000,
+	QB=0,
 	//TEST_BLOCKLIST=2*60*1000,
 	nb_blocklist=0,
 	NB_RETRIES=3,
@@ -135,7 +138,8 @@ var bittorrent=require('./index.js'),
 	GETPEERS={},
 	TOO_MANY=10,
 	FFMPEG_BIN_PATH,
-	socks_ports=[1080,1081,60088];
+	socks_ports=[1080,1081,60088],
+	MAX_V8_BUFFER=1e9;
 
 try {
 	geoip=require('./geoip.js').geoip;
@@ -175,6 +179,22 @@ if (process.argv) {
 		var args=process.argv.splice(2);
 		if (args.length) {
 			var magnets=args[0];
+			if (magnets.indexOf('.torrent')!==-1) {
+				try {
+					var torrent_=fs.readFileSync(magnets);
+					torrent_=parseTorrent(torrent_);
+					if (torrent_.infoHash) {
+						console.log('infohash for '+magnets+': '+torrent_.infoHash);
+						magnets=torrent_.infoHash;
+					} else {
+						console.log('bad torrent file');
+						return;
+					};
+				} catch(ee) {
+					console.log('bad or non existing torrent file');
+					return;
+				};
+			};
 			if (args.length>1) {
 				if (args[1]==='freerider') {
 					freerider=true;
@@ -233,7 +253,7 @@ if (process.argv) {
 	};
 };
 
-FFMPEG_BIN_PATH=FFMPEG_BIN_PATH||'C:/Program Files/ffmpeg/ffmpeg-20150113-git-b23a866-win32-static/bin/ffmpeg.exe';
+FFMPEG_BIN_PATH=FFMPEG_BIN_PATH||'your ffmpeg path';
 
 var path=path||'./store';
 
@@ -274,7 +294,11 @@ var torrent_live=function(magnet,first,free) {
 			if (res) {
 				if (res.values) {
 					console.log('------- closest spy '+addr,true);
-					addspy(addr,LEVEL_1);
+					var rid;
+					if (res.id) {
+						rid=res.id.toString('hex');
+					};
+					addspy(addr,LEVEL_1,rid,res.version);
 				} else {
 					CLOSEST.push(addr);
 				};
@@ -413,7 +437,8 @@ var torrent_live=function(magnet,first,free) {
 			var t0=Date.now();
 			var l=file.length;
 			var name=file.name;
-			var child_buff=[];
+			var child_buff=[[]];
+			var indexb=0;
 			var speed,time,nbwires,onbwires,child,streamres;
 			var stream=file.createReadStream();
 			var transcode=function() {
@@ -477,26 +502,36 @@ var torrent_live=function(magnet,first,free) {
 						ini_dht.destroy();
 					};
 				};
-				if (streamres) {
-					if (child) {
-						var cwrite=function() {
-							var ok=true;
-							child.__buffer__=false;
-							while ((child_buff.length)&&(ok)) {
-								ok=child.stdin.write(child_buff.shift());
-								n++;
-							};
-							if (!ok) {
-								child.__buffer__=true;
-								child.stdin.once('drain',cwrite);
+				if (streamres) { //modif due to V8 max array/buffer size
+					var cwrite=function() {
+						var ok=true;
+						while ((child_buff[0].length)&&(ok)) {
+							ok=child.stdin.write(child_buff[0].shift());
+							n++;
+						};
+						if (!ok) {
+							child.__buffer__=true;
+							child.stdin.once('drain',cwrite);
+						} else {
+							child_buff.shift();
+							if (child_buff.length) {
+								cwrite();
+							} else {
+								child.__buffer__=false;
 							};
 						};
-						child_buff.push(chunk);
-						if (!child.__buffer__) {
+					};
+					if (child_buff[child_buff.length-1].length*chunk.length<MAX_V8_BUFFER) {
+						child_buff[child_buff.length-1].push(chunk);
+					} else {
+						child_buff.push([]);
+						child_buff[child_buff.length-1].push(chunk);
+					};
+					if (!child.__buffer__) {
+						if (child) {
+							child.__buffer__=true;
 							cwrite();
 						};
-					} else {
-						child_buff.push(chunk);
 					};
 				};
 			});
@@ -630,7 +665,7 @@ var torrent_live=function(magnet,first,free) {
 		};
 	};
 
-	var addspy=function(addr,type) {
+	var addspy=function(addr,type,id,version) {
 		var tmp=addr.split(':');
 		var ip=tmp[0];
 		var port=tmp[1];
@@ -678,19 +713,31 @@ var torrent_live=function(magnet,first,free) {
 					};
 				};
 			} else {
+				var sw;
+				if (swarm) {
+					sw=swarm.infoHash;
+				} else {
+					sw=fakeinfohash;
+				};
 				if (!blocked_1.contains(ip)) {
 					Arrayblocklist1.push(ip);
 					blocked_1.add(ip);
 					nbspy_1++;
-					if (prefixmille.length>2) {
-						console.log('spy level 1 '+addr+' for '+swarm.infoHash.toString('hex')+' total '+nbspy_1,true);
+					var bep42=false;
+					if (id) {
+						bep42=test_bep42(new Buffer(id,'hex'),addr.split(':')[0]);
+					};
+					if (bep42) {
+						console.log('-------------------------- spy level 1 '+addr+' for infohash '+sw.toString('hex')+' nodeID '+id+' version '+version+' bep42 '+bep42+' total '+nbspy_1,true);
+					} else {
+						console.log('spy level 1 '+addr+' for infohash '+sw.toString('hex')+' nodeID '+id+' version '+version+' bep42 '+bep42+' total '+nbspy_1,true);
 					};
 				} else {
 					if (prefixmille.length>2) {
-						console.log('already known spy level 1 '+addr+' for '+swarm.infoHash.toString('hex'),true);
+						console.log('already known spy level 1 '+addr+' for '+sw.toString('hex'),true);
 					};
 				};
-				blocklist1[ip]=port+':'+swarm.infoHash.toString('hex').substr(0,5);
+				blocklist1[ip]=port+':'+sw.toString('hex').substr(0,5);
 			};
 		};
 	};
@@ -732,13 +779,13 @@ var torrent_live=function(magnet,first,free) {
 		//console.log('already known spy '+ip+' - total of known spies encountered :'+knownspies.length+' of '+Arrayblocklist.length,true);
 	};
 
-	var onpeer=function(addr,hash,_addr) {
+	var onpeer=function(addr,hash,_addr,id,version) {
 		if (_addr) {
 			var ip=_addr.split(':')[0];
 			if (!blocked_1.contains(ip)) {
 				//console.log('potential new spy level 1 '+_addr,true);
 				//addtestspy(_addr,spy_level1);
-				addspy(_addr,LEVEL_1);
+				addspy(_addr,LEVEL_1,id,version);
 			};
 		};
 		if (swarm) {
@@ -788,15 +835,19 @@ var torrent_live=function(magnet,first,free) {
 				};
 				if (blocked_1.contains(ip)) {
 					var disc=blocklist1[ip];
+					//console.log('------------------------ got announce from level 1 spy '+addr+' for infohash '+info+' on port '+port+' discovered with (port:prefix)'+disc,true);
 					disc=disc.split(':');
 					if (disc.length===2) {
+						console.log('------------------------ got announce from level 1 spy '+addr+' for infohash '+info+' on port '+port+' discovered with (port:prefix)'+disc[0]+':'+disc[1],true);
 						//if (prefixmille.length>2) {
 							testpeerlevel1(ip+':'+disc[0],disc[1],info,table,port);
 						//};
 					};
 				};
-				if (!ANNOUNCERS[addr]) {
-					ANNOUNCERS[addr]=info;
+				if (prefixmille.length>2) {
+					if (!ANNOUNCERS[addr]) {
+						ANNOUNCERS[addr]=info;
+					};
 				};
 			});
 		};
@@ -1099,7 +1150,8 @@ var spiestest=function() {
 			console.log('sending get_peer to '+addr+' for infohash '+fakeinfohash+' with nodeId '+nodeId,true);
 			table._sendGetPeers(addr,fakeinfohash,function(err,res) {
 				if (res) {
-					console.log('response from '+addr+' '+(res.values?'values':'nodes')+' '+res.id.toString('hex'),true);
+					var bep42=test_bep42(res.id,addr.split(':')[0]);
+					console.log('response from '+addr+' '+(res.values?'values':'nodes')+' nodeID '+res.id.toString('hex')+' bep42 '+bep42,true);
 				} else {
 					console.log('response error from '+addr+' '+err,true);
 				}
@@ -1379,6 +1431,18 @@ var nextinf=function(hash,bits) {
 	return hash.slice(0,c)+n+hash.slice(c+n.length);
 };
 
+var test_bep42=function(id,ip) {
+	if (id.length===20) {
+		var id2=generate_id(ip,id[19]);
+		var testid=id.slice(0,4).readUInt32BE()>>12;
+		var testid2=id2.slice(0,4).readUInt32BE()>>12;
+		if (testid===testid2) {
+			return true;
+		};
+	};
+	return false;
+};
+
 var testblocklist=function() {
 	var count=0;
 	var list=[];
@@ -1400,29 +1464,35 @@ var testblocklist=function() {
 	try {fs.renameSync(pathd+'/spies.txt',pathd+'/spiesprev.txt');} catch(ee){};
 	if (findspiesonly) {
 		console.log('Number of spies alive in blocklist: '+nb_blocklist+' vs total discovered '+Arrayblocklist.length+' - spies level 1: '+nbspy_1+' - total of known spies encountered :'+knownspies.length,true);
-		try {fs.renameSync(pathd+'/spieslevel1.txt',pathd+'/spieslevel1prev.txt');} catch(ee){};
-		try {fs.renameSync(pathd+'/spieslevel2.txt',pathd+'/spieslevel2prev.txt');} catch(ee){};
-		Object.keys(blocklist1).forEach(function(val) {
-			bl1.push(val+':'+blocklist1[val]);
-		});
-		lev1=JSON.stringify(bl1);
-		lev2=JSON.stringify(Arrayblocklist);
-		socks=JSON.stringify(Arraysocks5);
-		writeFile(pathd+'/spies-'+((new Date().toLocaleString()).replace('/','','g').split(' ').join('').split(':')[0])+'.txt',list);
-		writeFile(pathd+'/spieslevel1-'+((new Date().toLocaleString()).replace('/','','g').split(' ').join('').split(':')[0])+'.txt',lev1);
-		writeFile(pathd+'/spieslevel2-'+((new Date().toLocaleString()).replace('/','','g').split(' ').join('').split(':')[0])+'.txt',lev2);
-		writeFile(pathd+'/spieslevel1.txt',lev1);
-		writeFile(pathd+'/spieslevel2.txt',lev2);
-		if (Arraysocks5.length) {
-			writeFile(pathd+'/socks5-'+((new Date().toLocaleString()).replace('/','','g').split(' ').join('').split(':')[0])+'.txt',socks);
-			writeFile(pathd+'/socks5.txt',socks);
-		};
-		if (mille) {
-			Object.keys(ANNOUNCERS).forEach(function(val) {
-				announcers.push(val+':'+ANNOUNCERS[val]);
+		QB++;
+		if (QB%32===0) {
+			QB=0;
+			try {fs.renameSync(pathd+'/spieslevel1.txt',pathd+'/spieslevel1prev.txt');} catch(ee){};
+			try {fs.renameSync(pathd+'/spieslevel2.txt',pathd+'/spieslevel2prev.txt');} catch(ee){};
+			Object.keys(blocklist1).forEach(function(val) {
+				bl1.push(val+':'+blocklist1[val]);
 			});
-			announcers=JSON.stringify(announcers);
-			writeFile(pathd+'/announcers.txt',announcers);
+			lev1=JSON.stringify(bl1);
+			lev2=JSON.stringify(Arrayblocklist);
+			socks=JSON.stringify(Arraysocks5);
+			writeFile(pathd+'/spies-'+((new Date().toLocaleString()).replace('/','','g').split(' ').join('').split(':')[0])+'.txt',list);
+			writeFile(pathd+'/spieslevel1-'+((new Date().toLocaleString()).replace('/','','g').split(' ').join('').split(':')[0])+'.txt',lev1);
+			writeFile(pathd+'/spieslevel2-'+((new Date().toLocaleString()).replace('/','','g').split(' ').join('').split(':')[0])+'.txt',lev2);
+			writeFile(pathd+'/spieslevel1.txt',lev1);
+			writeFile(pathd+'/spieslevel2.txt',lev2);
+			if (Arraysocks5.length) {
+				writeFile(pathd+'/socks5-'+((new Date().toLocaleString()).replace('/','','g').split(' ').join('').split(':')[0])+'.txt',socks);
+				writeFile(pathd+'/socks5.txt',socks);
+			};
+			if (mille) {
+				if (prefixmille.length>2) {
+					Object.keys(ANNOUNCERS).forEach(function(val) {
+						announcers.push(val+':'+ANNOUNCERS[val]);
+					});
+					announcers=JSON.stringify(announcers);
+					writeFile(pathd+'/announcers.txt',announcers);
+				};
+			};
 		};
 	};
 	if (findspiesonly) {
@@ -1447,7 +1517,7 @@ var get_extension=function(name) {
 	};
 };
 
-var writeFile=function(filename,data) {
+var writeFile2=function(filename,data) {
 	var buff=new Buffer(data,'utf8');
 	try {
 		var fd=fs.openSync(filename,'w');
@@ -1463,6 +1533,18 @@ var writeFile=function(filename,data) {
 	};
 };
 
+var writeFile=function(filename,data) {
+	var buff=new Buffer(data,'utf8');
+	fs.writeFile(filename,buff,function(err) {
+		if (err) {
+			console.log('error writefile');
+			 for (var n in err) {
+				console.log(n+' '+err[n]);
+			 };
+		};
+	});
+};
+
 //modification of http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
 var unique=function() {
 	var o={};
@@ -1475,7 +1557,8 @@ var unique=function() {
 };
 
 var init=function() {
-	var spies,spiesprev,spieslevel1,spieslevel1prev,spieslevel2,spieslevel2prev,socks,announcers;
+	var spies,spiesprev,spieslevel1,spieslevel1prev,spieslevel2,spieslevel2prev,socks;
+	var announcers=[];
 	try {
 		spies=fs.readFileSync(pathd+'spies.txt').toString('utf8');
 	} catch(ee) {
@@ -1513,6 +1596,12 @@ var init=function() {
 	} catch(ee) {
 		socks='[]';
 	};
+	// deactivate logs level 1 and level 2
+	spieslevel1='[]';
+	spieslevel2='[]';
+	spieslevel1prev='[]';
+	spieslevel2prev='[]';
+	//
 	spieslevel2=spieslevel2.length<spieslevel2prev.length?spieslevel2prev:spieslevel2;
 	Arrayblocklist=JSON.parse(spieslevel2);
 	var tmp=JSON.parse(spies);
@@ -1546,17 +1635,19 @@ var init=function() {
 	console.log('Alive spies: '+tmp.length+' level 1 '+Arrayblocklist1.length,true);
 	if (mille) {
 		console.log('prefix mille: '+prefixmille,true);
-		try {
-			announcers=JSON.parse(fs.readFileSync(pathd+'announcers.txt').toString('utf8'));
-		} catch(ee) {
-			announcers=[];
-		};
-		announcers.forEach(function(val) {
-			val=val.split(':');
-			if (val.length===2) {
-				ANNOUNCERS[val[0]]=val[1];
+		if (prefixmille.length>2) {
+			try {
+				announcers=JSON.parse(fs.readFileSync(pathd+'announcers.txt').toString('utf8'));
+			} catch(ee) {
+				announcers=[];
 			};
-		});
+			announcers.forEach(function(val) {
+				val=val.split(':');
+				if (val.length===2) {
+					ANNOUNCERS[val[0]]=val[1];
+				};
+			});
+		};
 	};
 	//START=Arrayblocklist.length?(30*1000):(5*60*1000);
 	var options = {
@@ -1600,6 +1691,20 @@ var init=function() {
 
 var t=Date.now();
 
+if (magnets) {
+	//console.log(magnets);
+	if (magnets.indexOf('mille')!==-1) {
+		mille=true;
+		prefixmille=magnets.split('mille')[1];
+		//console.log('prefix mille: '+prefixmille);
+		if (prefixmille.length<=2) {
+			//prefixmille=parseInt(prefixmille);
+			pathd='';
+		};
+	};
+	//console.log('pathd '+pathd);
+};
+
 //var geoipfile=pathd+'geoip-'+t+'.csv';
 var logfile=function(bool) {
 
@@ -1611,9 +1716,9 @@ var logfile=function(bool) {
 		console.log=function(txt,user) {
 			if (user) {
 				try {
-					if (prefixmille.length>2) {
+					//if (prefixmille.length>2) {
 						oconsole(txt);
-					};
+					//};
 				} catch (ee) {}
 			};
 			txt +=' '+(new Date().toDateString())+' '+(new Date().toTimeString());

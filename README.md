@@ -72,15 +72,9 @@ To use it:
 	
 	Run from the command line:
 	
-	node freerider.js [infohash]
+	node freerider.js [infohash] or [magnet] or [file.torrent] [webm or mp4](optional)
 	
-	or
-	
-	node freerider.js [magnet]
-	
-	or
-	
-	node freerider.js [magnet] [path]
+	node freerider.js [infohash] or [magnet] or [file.torrent] [path](optional) [webm or mp4](optional)
 	
 The file being downloaded will appear in the 'store' directory (or in the path directory that you have specified) or in a new folder in this directory if there are several files.
 
@@ -92,6 +86,16 @@ The default path is the 'store' directory in the 'torrent-live' directory, this 
 	Examples:
 	
 	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e
+	
+	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e C:/myvideos/
+	
+	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e C:/myvideos/ mp4
+	
+	node freerider.js movie.torrent
+	
+	node freerider.js movie.torrent C:/myvideos/
+	
+	node freerider.js movie.torrent C:/myvideos/ webm
 	
 	or to download several torrents:
 	
@@ -203,6 +207,8 @@ So, assuming that this particularly monitored infohash is 'ef330b39f4801d25b4245
 
 	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e findspiesonly
 	
+	node freerider.js movie.torrent findspiesonly
+	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e findspiesonly
 
 Or, more recommended, you can use the dynamic blocklist that we maintain following the method defined in the study, method that is not easy for anybody to continuously run.
@@ -239,6 +245,8 @@ Torrent-live does allow to transcode a file on the fly, if you are using somethi
 
 	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e mp4/webm
 	
+	node freerider.js movie.torrent mp4/webm
+	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e mp4/webm
 	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos' mp4/webm
@@ -249,13 +257,17 @@ For transcoding you must install ffmpeg that you can find [here](https://www.ffm
 
 	node freerider.js ef330b39f4801d25b4245212e75a38634bfc856e mp4/webm 'C:/Program Files/ffmpeg/ffmpeg-20150113-git-b23a866-win32-static/bin/ffmpeg.exe'
 	
+	node freerider.js movie.torrent mp4/webm 'C:/Program Files/ffmpeg/ffmpeg-20150113-git-b23a866-win32-static/bin/ffmpeg.exe'
+	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e mp4/webm 'C:/Program Files/ffmpeg/ffmpeg-20150113-git-b23a866-win32-static/bin/ffmpeg.exe'
 	
 	node freerider.js magnet:?xt=urn:btih:ef330b39f4801d25b4245212e75a38634bfc856e 'D:/myvideos' mp4/webm 'C:/Program Files/ffmpeg/ffmpeg-20150113-git-b23a866-win32-static/bin/ffmpeg.exe'
 
 ## Tips/Recommendations
 
-Just use simple magnet links formatted as the above examples with the infohash information only ('ef330b39f4801d25b4245212e75a38634bfc856e' here), do not use other formats, it's easy to retrieve the infohash information on the internet or to deduct it from trackers links. 
+Just use simple magnet links formatted as the above examples with the infohash information only ('ef330b39f4801d25b4245212e75a38634bfc856e' here), do not use other formats, it's easy to retrieve the infohash information on the internet or to deduct it from trackers links.
+
+If you don't have the infohash, then retrieve the .torrent file and torrent-live will retrieve the infohash and use it, <b>do not open the .torrent file with your usual bittorrent client to retrieve the infohash</b>.
 
 Do not use trackers sites and do not follow their wrong and insecure recommendations, like not using the DHT.
 
@@ -273,14 +285,16 @@ More user friendly web based interface.
 
 	node freerider.js [infohash1-infohash2-...] [mp4/webm] [ffmpeg_path]
 	node freerider.js [magnet1-magnet2-...] [mp4/webm] [ffmpeg_path]
+	node freerider.js [movie.torrent] [mp4/webm] [ffmpeg_path]
 	node freerider.js [a1-a2-...] [path] [mp4/webm] [ffmpeg_path]
 
 	node freerider.js [infohash1-infohash2-...] findspiesonly
 	node freerider.js [magnet1-magnet2-...] findspiesonly
+	node freerider.js [movie.torrent] findspiesonly
 
-## Related projects :
+## Related projects:
 
-* [Ayms/node-Tor](https://github.com/Ayms/bittorrent-nodeid)
+* [Ayms/bittorrent-nodeid](https://github.com/Ayms/bittorrent-nodeid)
 * [Ayms/node-Tor](https://github.com/Ayms/node-Tor)
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
 * [Interception Detector](http://www.ianonym.com/intercept.html)
