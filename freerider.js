@@ -1432,15 +1432,19 @@ var nextinf=function(hash,bits) {
 };
 
 var test_bep42=function(id,ip) {
-	if (id.length===20) {
-		var id2=generate_id(ip,id[19]);
-		var testid=id.slice(0,4).readUInt32BE()>>12;
-		var testid2=id2.slice(0,4).readUInt32BE()>>12;
-		if (testid===testid2) {
-			return true;
+	try {
+		if (id.length===20) {
+			var id2=generate_id(ip,id[19]);
+			var testid=id.slice(0,4).readUInt32BE()>>12;
+			var testid2=id2.slice(0,4).readUInt32BE()>>12;
+			if (testid===testid2) {
+				return true;
+			};
 		};
+		return false;
+	} catch(ee) {
+		return false;
 	};
-	return false;
 };
 
 var testblocklist=function() {
