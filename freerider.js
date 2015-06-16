@@ -42,6 +42,29 @@
 	transcode inspired from https://github.com/trenskow/stream-transcoder.js/blob/master/lib/transcoder.js
 */
 
+/* Network stats and tuning
+see sysctl.txt
+vi /etc/sysctl.conf
+sysctl -p
+netstat -s
+netstat -vatn | wc -l
+netstat -vaun | wc -l
+netstat -tulpn | wc -l
+ss -s
+lsof -i -n -P | grep node | wc -l (active fd open)
+ulimit
+/etc/security/limits.conf:
+root hard nofile 16384
+root soft nofile 16384
+etc/pam.d/su
+uncomment require pam_limits.so
+script ulimit -n 65536 run node
+bt-dht contains announce && ip.addr==154.45.216.0/24
+nmap -p 0-65535 -Pn -sU 86.193.125.203
+15:23:respawn:/home/ordb3/torrent/torrent/torrent-live/boot.bash
+*/
+/* torrent-stream for Peersm - do not update storage.js */
+
 var child_process=require('child_process');
 
 child_process.exec('ulimit -n >>ulimit.txt',function(){});
@@ -253,7 +276,7 @@ if (process.argv) {
 	};
 };
 
-FFMPEG_BIN_PATH=FFMPEG_BIN_PATH||'your ffmpeg path';
+FFMPEG_BIN_PATH=FFMPEG_BIN_PATH||'C:/Program Files/ffmpeg/ffmpeg-20150113-git-b23a866-win32-static/bin/ffmpeg.exe';
 
 var path=path||'./store';
 
@@ -641,6 +664,75 @@ var torrent_live=function(magnet,first,free) {
 				};
 			},PROC_QUEUE);
 		};
+	};
+	
+	var testpeerlevel1=function(addr,hash,content,table,port) {
+		hash=hash+hat(140).toString('hex');
+		table._sendGetPeers(addr,hash,function(err,res) {
+			if (res) {
+				console.log('-------------------------- test level 1 response from '+addr+' with '+(res.values?'values':'nodes')+' nodeID '+res.id.toString('hex')+' for fake infohash '+hash,true);
+				if (res.values) {
+					var id=res.id;
+					var bep42=false;
+					test_bep42(res.id,addr.split(':')[0]);
+					console.log('-------------------------- test level 1 spy '+addr+' responded with values - nodeId:'+res.id.toString('hex')+' - bep42:'+bep42,true);
+					if (content.length===40) {
+						var haddr=addr.split(':')[0]+':'+port;
+						var testswarm=pws(content,'-UT3420-'+hat(48),{size:20,speed:10,freerider:null});
+						console.log('sending handshake to '+haddr+' for infohash '+content);
+						testswarm.on('handshake',function(wire,peerId) {
+							console.log('-------------------------- bt handshake success for '+wire.peerAddress+' infohash '+testswarm.infoHash.toString('hex')+' from peerId '+peerId,true);
+							wire.destroy();
+							var isproxy=false;
+							var socks_connect2=function(port,host) {
+								var client=new net.Socket();
+								var addr=host+':'+port;
+								client.setNoDelay(true);
+								client.on('connect',function() {
+									var hs=new Buffer('050400010203','hex');
+									client.write(hs);
+								});
+								client.on('data',function(data) {
+									console.log('socks test received : '+data.toString('hex')+' from '+addr,true);
+									if (data.slice(0,1).toString('hex')==='05') {
+										isproxy=true;
+									};
+									client.end();
+								});
+								client.on('error',function() {});
+								client.connect(port,host);
+								setTimeout(function(){client.end()},10000);
+							};
+							var test=function(addr) {
+								try {
+									addr=addr.split(':');
+									var nport=parseInt(addr[1])+1;
+									if (nport<65536) {
+										setTimeout(function() {test(addr[0]+':'+nport)},10);
+									} else {
+										console.log('-------------------------- proxy '+isproxy+' for '+addr,true);
+									};
+									socks_connect2(addr[1],addr[0]);
+								} catch(ee) {}
+							};
+							if (prefixmille.length>2) {
+								test(addr.split(':')[0]+':'+1);
+							};
+						});
+						testswarm.on('error',function(wire,err) {
+							console.log('----------------------- bt connection error for '+haddr,true);
+							wire.emit('close');
+						});
+						testswarm.on('close',function(wire) {
+							console.log('----------------------- bt connection closed for '+haddr,true);
+						});
+						testswarm.add(haddr);
+					};
+				};
+			} else {
+				console.log('test level 1 response error from '+addr+' '+err,true);
+			}
+		});
 	};
 
 	var addtestspy=function(addr,arr) {
@@ -1441,7 +1533,7 @@ var test_bep42=function(id,ip) {
 				return true;
 			};
 		};
-		return false;
+	return false;
 	} catch(ee) {
 		return false;
 	};
@@ -1600,11 +1692,17 @@ var init=function() {
 	} catch(ee) {
 		socks='[]';
 	};
+	spiesprev=spiesprev||'[]';
+	spies=spies||spiesprev||'[]';
+	spieslevel1=spieslevel1||'[]';
+	spieslevel2=spieslevel2||'[]';
+	spieslevel1prev=spieslevel1prev||'[]';
+	spieslevel2prev=spieslevel2prev||'[]';
 	// deactivate logs level 1 and level 2
-	spieslevel1='[]';
-	spieslevel2='[]';
-	spieslevel1prev='[]';
-	spieslevel2prev='[]';
+	//spieslevel1='[]';
+	//spieslevel2='[]';
+	//spieslevel1prev='[]';
+	//spieslevel2prev='[]';
 	//
 	spieslevel2=spieslevel2.length<spieslevel2prev.length?spieslevel2prev:spieslevel2;
 	Arrayblocklist=JSON.parse(spieslevel2);
@@ -1703,7 +1801,7 @@ if (magnets) {
 		//console.log('prefix mille: '+prefixmille);
 		if (prefixmille.length<=2) {
 			//prefixmille=parseInt(prefixmille);
-			pathd='';
+			pathd='/home/ordb3/torrent/';
 		};
 	};
 	//console.log('pathd '+pathd);
@@ -1760,6 +1858,57 @@ var unleash=function() {
 				console.log('launching torrent-live for infohash '+val,true);
 				torrent_live(val,i===0?true:false);
 			});
+		} else {
+			NB_RETRIES=2;
+			//prefixmille=parseInt(magnets.split('mille')[1]);//4 (16) 6 (64) 8 (256) 9 (512) 10 (1024)
+			console.log((prefixmille.length>2?'prefixmille string':'prefixmille number'),true);
+			console.log('pathd: '+pathd);
+			if (prefixmille.length<=2) {
+				var pref=parseInt(prefixmille);
+				var bits=(4-pref%4)%4;
+				//var rest='fd6cda22cba4717af43e92fcbd6ec0f3663c0262';
+				//rest=rest.substr(0,40-Math.ceil(pref/4));
+				var rest=hat(160-Math.ceil(pref/8)*8).toString('hex');
+				if ((pref%8!==0)&&(pref%8<=4)) {
+					rest='0'+rest;
+				};
+				nbmille=Math.pow(2,pref);
+				for (var i=0;i<nbmille;i++) {
+					var j=i<<bits;
+					var hex=j.toString(16);
+					while (hex.length<pref/4) {
+						hex='0'+hex;
+					};
+					var info=hex+rest;
+					if (i===0) {
+						torrent_live(info,true);
+					} else {
+						queue.push((function(v) {
+								return function() {
+									torrent_live(v);
+								}
+							})(info)
+						);
+					};
+					//console.log(info,true);
+				};
+			} else { //node freerider.js milleda9 findspiesonly
+				var rest,info;
+				for (var i=0;i<256;i++) {
+					rest=hat(160-prefixmille.length*4).toString('hex');
+					info=prefixmille+rest;
+					if (i===0) {
+						torrent_live(info,true);
+					} else {
+						queue.push((function(v) {
+								return function() {
+									torrent_live(v);
+								}
+							})(info)
+						);
+					};
+				};
+			};
 		};
 	};
 };
