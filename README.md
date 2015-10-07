@@ -7,7 +7,7 @@ Torrent-live is a new open source bittorrent client which detects, blocks and fo
 
 Torrent-live is not using unsafe trackers and client/peer exchanges mechanisms, only the bittorrent DHT (Distributed Hash Table).
 
-This project and the related study [Monitoring and blocking the bittorrent monitoring spies](https://gist.github.com/Ayms/077b114a27450f773939) do not aim to encourage things such as copyright infrigement but aim to protect the users and their privacy from mass surveillance.
+This project and the related study [Monitoring and blocking the bittorrent monitoring spies](https://gist.github.com/Ayms/f2da9f860775ead2066e) do not aim to encourage things such as copyright infrigement but aim to protect the users and their privacy from mass surveillance.
 
 ## Presentation
 
@@ -147,7 +147,7 @@ You can keep or remove the file(s) at the end of the download, in any case you a
 	
 The IP addresses are stored in the 'spies.txt' file (["IP address1","IP address2",...,"IP addressN"]) and 'spies.p2p' which is compatible with usual clients blocklists.
 
-The method to detect, block and follow the spies is derived from the study "Monitoring and blocking the bittorrent monitoring spies", which is for now undisclosed, the abstract and the beginning of the study can be read here: [Monitoring and blocking the bittorrent monitoring spies](https://gist.github.com/Ayms/077b114a27450f773939)
+The method to detect, block and follow the spies is derived from the study "Monitoring and blocking the bittorrent monitoring spies", which is for now undisclosed, most of the study can be read here: [Monitoring and blocking the bittorrent monitoring spies](https://gist.github.com/Ayms/f2da9f860775ead2066e)
 
 The study does define the method and explain how to build/maintain a dynamic blocklist.
 
