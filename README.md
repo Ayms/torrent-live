@@ -223,7 +223,7 @@ Our crawlers are using the following method to detect and track the spies:
 - for nodeIDs and infohashes the remaining 160 - n bits part is a random number, most probably the resulting infohash does not exist in the bittorrent network
 - each process gets the closest nodes and crawls the DHT sending get_peers requests
 - tag as spies the peers returned as values (so those pretending to have something that does not exist) and keep a reference to the infohashes that allowed to discover them
-- test them starting with them the bittorrent handshake with the infohash used to discover them and register them in the blocklist if the TCP/uTP connection is successful, if for a given infohash too many peers are answering correctly to the bittorrent handshake then disconsider them and end the related process, the given infohash is an existing one.
+- test the returned peers as values starting with them the bittorrent handshake with the infohash used to discover them and register them in the blocklist if the TCP/uTP connection is successful, if for a given infohash too many peers are answering correctly to the bittorrent handshake then disconsider them and end the related process, the given infohash is an existing one.
 - once a process reaches the closest nodes, query them with get_peers request and handle the peers returned as values as explained above, end the process and start a new one with an infohash and a nodeID set to crawl in total the 2^20 (~1 M) bittorrent space (so fill at each new crawl with this process the 20-n remaining bits and choose a random number for the remaining 160 - 20 bits.
 - test periodically each spy in the blocklist starting the bittorrent handshake with it with the infohash that allowed to discover it, keep it in the blocklist if the TCP/uTP connection is successful, remove it if not.
 - mark as permanent spies those that are implementing several ports/nodeIDs for the same IP and don't check them periodically
@@ -237,6 +237,16 @@ Among the 3000 spies we believe that only a few hundreds are real spies but at a
 Among these few hundreds some of the spies never rotate their IPs since probably this would become more complicate for them to do the job.
 
 The method is determinist and does allow to catch quasi all the spies, only a few could escape like newcomers or those that rotate their IPs faster than the crawlers' cycles, but that's just a matter of processing capabilities to get them all.
+
+##Deanonymizing the VPN peers
+
+We explain [here](http://torrent-live.org/) section "I don't care, I am using a VPN or an anonymizer network" why using a VPN or an anonymizer network with the bittorrent network does not make sense.
+
+A VPN peer has the same deviant behavior than a torrent-live's user with the freerider option activated, it cannot seed, neither discuss/share anything except with whom it has already talked to, which is quite limited.
+
+Different methods have been presented to deanonymize the VPN peers, none of them being really convincing, ie allowing to quietly deanonymize the VPN peers without using unlikely methods like attracting them somewhere or scanning the whole IP space, we found a new way to do this without these drawbacks.
+
+More to come... 
 	
 ## Transcoding and File conversion
 
