@@ -246,6 +246,8 @@ A VPN peer has the same deviant behavior than a torrent-live's user with the fre
 
 Different methods have been presented to deanonymize the VPN peers, none of them being really convincing, ie allowing to quietly deanonymize the VPN peers without using unlikely methods like attracting them somewhere or scanning the whole IP space, we found a new way to do this without these drawbacks.
 
+![deanonymizing VPN peers](http://www.peersm.com/img/real.png)
+
 More to come... 
 	
 ## Transcoding and File conversion
