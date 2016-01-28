@@ -242,7 +242,7 @@ The method is determinist and does allow to catch quasi all the spies, only a fe
 
 We explain [here](http://torrent-live.org/) section "I don't care, I am using a VPN or an anonymizer network" why using a VPN with the bittorrent network is not necessarily a good idea.
 
-A VPN peer has the same deviant behavior than a torrent-live's user with the freerider option activated, it cannot seed, neither discuss/share anything except with whom it has already talked to, which is quite limited.
+A VPN peer has the same deviant behavior than a torrent-live user with the freerider option activated, it cannot seed, neither discuss/share anything except with whom it has already talked to, which is quite limited.
 
 Some methods are known to deanonymize the VPN users, [WebRTC](https://torrentfreak.com/huge-security-flaw-leaks-vpn-users-real-ip-addresses-150130/), [VPN port forwarding](https://torrentfreak.com/huge-security-flaw-can-expose-vpn-users-real-ip-adresses-151126/) and [VPN scan](https://torrentfreak.com/routing-feature-can-expose-vpn-users-real-ip-addresses-151222/), the first one does not really concern the bittorrent users, the second one needs to have port forwarding activated at the VPN level, which is rare, and the target must be attracted to the IP:forwarded port of the attacker, which is not easy, the third one suggests to send requests to the entire IP space to deanonymize a VPN peer, which is quite unlikely.
 
