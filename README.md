@@ -240,7 +240,7 @@ The method is determinist and does allow to catch quasi all the spies, only a fe
 
 ##Deanonymizing the VPN peers
 
-We explain [here](http://torrent-live.org/) section "I don't care, I am using a VPN or an anonymizer network" why using a VPN or an anonymizer network with the bittorrent network is not a very good idea.
+We explain [here](http://torrent-live.org/) section "I don't care, I am using a VPN or an anonymizer network" why using a VPN with the bittorrent network is not necessarily a good idea.
 
 A VPN peer has the same deviant behavior than a torrent-live's user with the freerider option activated, it cannot seed, neither discuss/share anything except with whom it has already talked to, which is quite limited.
 
