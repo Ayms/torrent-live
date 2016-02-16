@@ -250,6 +250,8 @@ So different methods have been presented to deanonymize the VPN peers, none of t
 
 ![deanonymizing VPN peers](http://www.peersm.com/img/real.png)
 
+It has to be noted that the method works for whatever combination of VPNs, anonymizer networks (like Tor) or proxies the peers are using.
+
 More to come.
 	
 ## Transcoding and File conversion
