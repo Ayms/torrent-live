@@ -254,6 +254,8 @@ So different methods have been presented to deanonymize the VPN peers, none of t
 
 It has to be noted that the method works for whatever combination of VPNs, anonymizer networks (like Tor) or proxies the peers are using.
 
+In addition, in case a peer cannot straight away be deanonymized the method allow to trace the activity of this peer over time.
+
 More to come.
 	
 ## Transcoding and File conversion
