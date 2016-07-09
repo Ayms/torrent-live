@@ -256,6 +256,8 @@ It has to be noted that the method works for whatever combination of VPNs, anony
 
 In addition, in case a peer cannot straight away be deanonymized the method allow to trace the activity of this peer over time.
 
+And even worse, correlating the tracking information can finally allow to deanonymize a peer at a certain point of time and get the complete history of possible IPs he used during that period.
+
 More to come.
 	
 ## Transcoding and File conversion
