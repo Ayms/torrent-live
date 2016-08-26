@@ -39,11 +39,13 @@ Install nodejs v0.11.14 for your platform (http://nodejs.org/dist/v0.11.14/)
 
 To install torrent-live:
 
-Go in the directory where you want to install it:
+~~Go in the directory where you want to install it:~~
 
-	npm install torrent-live
+	~~npm install torrent-live~~
 	
-Note: if you fork torrent-live then run ``npm install`` to get all the dependencies.
+~~Note: if you fork torrent-live then run ``npm install`` to get all the dependencies.~~
+
+See [Issue 2](https://github.com/Ayms/torrent-live/issues/2), removing npm for now
 	
 Or
 
