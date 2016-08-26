@@ -35,7 +35,7 @@ You can transcode a file on the fly while it is being downloaded (usually in mp4
 
 ## Installation and use (Windows, Mac, Linux)
 
-Install nodejs v0.11.14 for your platform (http://nodejs.org/dist/v0.11.14/)
+Install nodejs v0.11.14 or later for your platform (http://nodejs.org/dist/v0.11.14/)
 
 To install torrent-live:
 
