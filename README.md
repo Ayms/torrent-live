@@ -41,7 +41,7 @@ To install torrent-live:
 
 ~~Go in the directory where you want to install it:~~
 
-	~~npm install torrent-live~~
+~~npm install torrent-live~~
 	
 ~~Note: if you fork torrent-live then run ``npm install`` to get all the dependencies.~~
 
