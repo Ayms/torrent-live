@@ -319,6 +319,7 @@ More user friendly web based interface.
 
 ## Related projects:
 
+* [Ayms/bitcoin-wallets](https://github.com/Ayms/bitcoin-wallets)
 * [Ayms/bittorrent-nodeid](https://github.com/Ayms/bittorrent-nodeid)
 * [Ayms/node-Tor](https://github.com/Ayms/node-Tor)
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
