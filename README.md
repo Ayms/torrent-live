@@ -240,7 +240,7 @@ Among these few hundreds some of the spies never rotate their IPs since probably
 
 The method is determinist and does allow to catch quasi all the spies, only a few could escape like newcomers or those that rotate their IPs faster than the crawlers' cycles, but that's just a matter of processing capabilities to get them all.
 
-##Deanonymizing the VPN peers
+## Deanonymizing the VPN peers
 
 We explain [here](http://torrent-live.org/) section "I don't care, I am using a VPN or an anonymizer network" why using a VPN with the bittorrent network is not necessarily a good idea.
 
