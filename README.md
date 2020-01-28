@@ -7,7 +7,7 @@ Torrent-live is a new open source bittorrent client which detects, blocks and fo
 
 Torrent-live is not using unsafe trackers and client/peer exchanges mechanisms, only the bittorrent DHT (Distributed Hash Table).
 
-This project and the related study [Monitoring and blocking the bittorrent monitoring spies](https://gist.github.com/Ayms/f2da9f860775ead2066e) do not aim to encourage things such as copyright infrigement but aim to protect the users and their privacy from mass surveillance.
+This project and the related study [Monitoring and blocking the bittorrent monitoring spies](https://gist.github.com/Ayms/79bdfc6ba747fb49503d) do not aim to encourage things such as copyright infrigement but aim to protect the users and their privacy from mass surveillance.
 
 ## Presentation
 
