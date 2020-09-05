@@ -11,7 +11,7 @@ This project and the related study [Monitoring and blocking the bittorrent monit
 
 ## Presentation
 
-Check out [torrent-live](http://www.torrent-live.peersm.com) for a more general presentation and to get the dynamic torrent blocklist.
+Check out [torrent-live](http://torrent-live.peersm.com) for a more general presentation and to get the dynamic torrent blocklist.
 
 This is based on the excellent [torrent-stream](https://github.com/mafintosh/torrent-stream) and [bittorrent-dht](https://github.com/feross/bittorrent-dht) modules.
 
@@ -323,7 +323,7 @@ More user friendly web based interface.
 * [Ayms/bittorrent-nodeid](https://github.com/Ayms/bittorrent-nodeid)
 * [Ayms/node-Tor](https://github.com/Ayms/node-Tor)
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
-* [Interception Detector](http://www.ianonym.com/intercept.html)
+* [Interception Detector](http://ianonym.peersm.com/intercept.html)
 * [Ayms/abstract-tls](https://github.com/Ayms/abstract-tls)
 * [Ayms/websocket](https://github.com/Ayms/websocket)
 * [Ayms/node-typedarray](https://github.com/Ayms/node-typedarray)
