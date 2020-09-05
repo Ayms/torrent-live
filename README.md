@@ -11,7 +11,7 @@ This project and the related study [Monitoring and blocking the bittorrent monit
 
 ## Presentation
 
-Check out [torrent-live](http://www.torrent-live.org) for a more general presentation and to get the dynamic torrent blocklist.
+Check out [torrent-live](http://www.torrent-live.peersm.com) for a more general presentation and to get the dynamic torrent blocklist.
 
 This is based on the excellent [torrent-stream](https://github.com/mafintosh/torrent-stream) and [bittorrent-dht](https://github.com/feross/bittorrent-dht) modules.
 
@@ -242,7 +242,7 @@ The method is determinist and does allow to catch quasi all the spies, only a fe
 
 ##Deanonymizing the VPN peers
 
-We explain [here](http://torrent-live.org/) section "I don't care, I am using a VPN or an anonymizer network" why using a VPN with the bittorrent network is not necessarily a good idea.
+We explain [here](http://torrent-live.peersm.com/) section "I don't care, I am using a VPN or an anonymizer network" why using a VPN with the bittorrent network is not necessarily a good idea.
 
 A VPN peer has the same deviant behavior than a torrent-live user with the freerider option activated, it cannot seed, neither discuss/share anything except with whom it has already talked to, which is quite limited.
 
